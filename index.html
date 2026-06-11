@@ -4,247 +4,360 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Mon Budget">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#0f0f0f">
 <title>Mon Budget</title>
 <style>
 :root{
-  --bg:#f7f7f5;--card:#ffffff;--border:#e8e6e0;
-  --text:#1a1a18;--muted:#888780;--subtle:#b4b2a9;
-  --green:#1D9E75;--red:#D85A30;--amber:#BA7517;
-  --blue:#185FA5;--mc:#993556;--visa:#854F0B;
-  --purple:#534AB7;
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --bg:#0f0f0f;
+  --bg2:#1a1a1a;
+  --bg3:#242424;
+  --card:#1e1e1e;
+  --card2:#272727;
+  --border:#2e2e2e;
+  --border2:#3a3a3a;
+  --text:#f0f0ee;
+  --muted:#888;
+  --subtle:#555;
+  --green:#2ecc8a;
+  --green-bg:#0d2b1e;
+  --red:#ff5c5c;
+  --red-bg:#2a0f0f;
+  --amber:#f5a623;
+  --amber-bg:#2a1d00;
+  --blue:#4a9eff;
+  --blue-bg:#0a1f3a;
+  --mc:#e07aaa;
+  --mc-bg:#2a0f1f;
+  --visa:#f5a623;
+  --visa-bg:#2a1d00;
+  --purple:#a78bfa;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;color:var(--text);font-size:15px}
-/* Layout */
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;color:var(--text);font-size:15px}
 #app{display:flex;flex-direction:column;height:100%;height:-webkit-fill-available}
-#header{background:var(--card);border-bottom:0.5px solid var(--border);padding:12px 16px 10px;padding-top:calc(12px + env(safe-area-inset-top,0px));flex-shrink:0}
-#header h1{font-size:17px;font-weight:600;letter-spacing:-.3px}
-#header .sub{font-size:12px;color:var(--muted);margin-top:1px}
-#content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 0 calc(80px + var(--safe-bottom))}
-#tabs{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:0.5px solid var(--border);display:flex;padding-bottom:var(--safe-bottom);z-index:100}
-.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;background:none;border:none;color:var(--muted);font-size:10px;font-family:inherit;cursor:pointer;transition:color .15s}
-.tab-btn.active{color:var(--blue)}
-.tab-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-/* Sections */
-.section{display:none;padding:16px}
+
+/* HEADER */
+#header{
+  background:var(--bg);
+  border-bottom:0.5px solid var(--border);
+  padding:calc(14px + var(--safe-top)) 20px 12px;
+  flex-shrink:0;
+  display:flex;align-items:flex-end;justify-content:space-between;
+}
+#header h1{font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--text)}
+#hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+#hdr-date{font-size:12px;color:var(--muted)}
+#save-dot{width:7px;height:7px;border-radius:50%;background:var(--green);opacity:0;transition:opacity .3s;align-self:flex-end}
+#save-dot.show{opacity:1}
+
+/* CONTENT */
+#content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(72px + var(--safe-bottom))}
+
+/* TABS */
+#tabs{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(15,15,15,.95);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:0.5px solid var(--border);
+  display:flex;
+  padding-bottom:var(--safe-bottom);
+  z-index:100;
+}
+.tab-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:9px 4px 7px;background:none;border:none;
+  color:var(--subtle);font-size:10px;font-family:inherit;cursor:pointer;
+  transition:color .15s;letter-spacing:.02em;
+}
+.tab-btn.active{color:var(--text)}
+.tab-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s}
+.tab-btn .tab-dot{width:4px;height:4px;border-radius:50%;background:var(--blue);opacity:0;margin-top:1px}
+.tab-btn.active .tab-dot{opacity:1}
+
+/* SECTIONS */
+.section{display:none;padding:16px 16px 8px}
 .section.active{display:block}
-/* Metric grid */
-.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.metric{background:var(--card);border-radius:12px;padding:12px 14px;border:0.5px solid var(--border)}
-.metric-lbl{font-size:11px;color:var(--muted);margin-bottom:4px}
-.metric-val{font-size:20px;font-weight:600;letter-spacing:-.5px}
-.metric-val.full{font-size:17px}
-.green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}
-/* Cards */
-.card{background:var(--card);border-radius:14px;border:0.5px solid var(--border);margin-bottom:12px;overflow:hidden}
-.card-head{font-size:13px;font-weight:500;color:var(--muted);padding:12px 14px 8px;border-bottom:0.5px solid var(--border)}
-.card-body{padding:4px 0}
-/* Rows */
-.row{display:flex;align-items:center;padding:9px 14px;gap:8px;border-bottom:0.5px solid var(--border)}
-.row:last-child{border-bottom:none}
-.row-date{font-size:11px;color:var(--muted);width:36px;flex-shrink:0}
-.row-label{flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row-amount{font-size:13px;font-weight:500;flex-shrink:0}
-.row.imminent{background:#fef9f0}
-.row.imminent-red{background:#fdf4f2}
-/* Badges */
-.badge{display:inline-block;padding:2px 6px;border-radius:6px;font-size:10px;font-weight:500;margin-left:4px}
-.badge-eng{background:#FAECE7;color:#993C1D}
-.badge-mod{background:#EEEDFE;color:#3C3489}
-.badge-ok{background:#EAF3DE;color:#3B6D11}
-.badge-pend{background:#FAEEDA;color:#854F0B}
-/* Alert */
-.alert{background:#fdf4f2;border:0.5px solid #F0997B;border-radius:12px;padding:10px 14px;font-size:12px;color:#993C1D;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start;line-height:1.4}
-/* Cards summary (cartes section) */
-.card-summary-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
-.cs{background:var(--card);border-radius:12px;border:0.5px solid var(--border);padding:10px 12px}
-.cs-head{font-size:10px;font-weight:500;margin-bottom:4px}
-.cs-val{font-size:16px;font-weight:600;letter-spacing:-.3px}
-.cs-sub{font-size:10px;color:var(--muted);margin-top:2px}
-/* Saisie form */
-.form-group{margin-bottom:14px}
-.form-label{font-size:12px;color:var(--muted);margin-bottom:5px;display:block}
-.form-control{width:100%;background:var(--card);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:15px;font-family:inherit;color:var(--text);-webkit-appearance:none;outline:none}
-.form-control:focus{border-color:var(--blue)}
-.seg{display:flex;background:#f0eeea;border-radius:10px;padding:3px;gap:3px;margin-bottom:14px}
-.seg-btn{flex:1;padding:7px 4px;border:none;background:none;border-radius:8px;font-size:13px;font-family:inherit;color:var(--muted);cursor:pointer;transition:.15s}
-.seg-btn.active{background:var(--card);color:var(--text);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.debit-hint{background:#EEF4FC;border-radius:10px;padding:9px 12px;font-size:12px;color:var(--blue);margin-bottom:14px}
-.btn-add{width:100%;background:var(--blue);color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:500;font-family:inherit;cursor:pointer}
-.btn-add:active{opacity:.85}
-/* Historique */
-.hist-filters{display:flex;gap:8px;margin-bottom:12px}
-.hist-filters select{flex:1;background:var(--card);border:0.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--text);-webkit-appearance:none;outline:none}
-.hist-filters input{flex:2;background:var(--card);border:0.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--text);outline:none}
-/* Projection */
-.proj-row{display:flex;align-items:center;padding:8px 14px;border-bottom:0.5px solid var(--border);gap:6px}
-.proj-row:last-child{border-bottom:none}
-.proj-date{font-size:11px;color:var(--muted);width:36px;flex-shrink:0}
-.proj-label{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.proj-amount{font-size:12px;font-weight:500;text-align:right;width:72px;flex-shrink:0}
-.proj-balance{font-size:11px;color:var(--muted);text-align:right;width:68px;flex-shrink:0}
-.proj-edit{background:none;border:none;color:var(--muted);font-size:16px;padding:0 2px;cursor:pointer}
-.warn-row{background:#fdf4f2}
-/* Edit sheet */
-#edit-sheet-wrap{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.4)}
-#edit-sheet{position:absolute;bottom:0;left:0;right:0;background:var(--card);border-radius:20px 20px 0 0;padding:20px 20px calc(20px + var(--safe-bottom));max-height:85vh;overflow-y:auto}
-#edit-sheet h3{font-size:16px;font-weight:600;margin-bottom:16px}
-.sheet-btns{display:flex;gap:10px;margin-top:6px}
-.sheet-btn{flex:1;padding:12px;border-radius:10px;font-size:14px;font-family:inherit;font-weight:500;cursor:pointer;border:none}
-.sheet-btn.save{background:var(--blue);color:#fff}
-.sheet-btn.cancel{background:#f0eeea;color:var(--text)}
-.sheet-btn.reset{background:#fdf4f2;color:var(--red);flex:0.5}
+
+/* SOLDE HERO */
+.solde-hero{
+  background:var(--card);
+  border-radius:20px;
+  padding:24px 20px 20px;
+  margin-bottom:12px;
+  border:0.5px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.solde-hero::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle,rgba(46,204,138,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.solde-label{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.solde-value{font-size:42px;font-weight:700;letter-spacing:-1.5px;line-height:1}
+.solde-value.pos{color:var(--green)}
+.solde-value.neg{color:var(--red)}
+.solde-sub{font-size:12px;color:var(--muted);margin-top:8px}
+
+/* CARDS GRID */
+.cards-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.mini-card{background:var(--card);border-radius:14px;padding:14px;border:0.5px solid var(--border)}
+.mini-card-label{font-size:11px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.mini-card-val{font-size:18px;font-weight:600;letter-spacing:-.5px}
+.mini-card-sub{font-size:10px;margin-top:3px}
+
+/* SECTION TITLE */
+.section-title{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px;padding-left:2px}
+
+/* LIST CARD */
+.list-card{background:var(--card);border-radius:16px;border:0.5px solid var(--border);margin-bottom:12px;overflow:hidden}
+.list-card-head{font-size:13px;font-weight:500;color:var(--muted);padding:12px 16px 10px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:6px}
+.list-card-head .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* ROWS */
+.lrow{display:flex;align-items:center;padding:10px 16px;gap:10px;border-bottom:0.5px solid var(--border)}
+.lrow:last-child{border-bottom:none}
+.lrow-date{font-size:11px;color:var(--muted);width:34px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.lrow-label{flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.lrow-amount{font-size:13px;font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums}
+.lrow.urgent{background:rgba(255,92,92,.06);border-left:2px solid var(--red)}
+.lrow.soon{background:rgba(245,166,35,.04);border-left:2px solid var(--amber)}
+.lrow.engaged{background:rgba(255,92,92,.08);border-left:2px solid rgba(255,92,92,.5)}
+
+/* BADGE */
+.badge{display:inline-block;padding:2px 6px;border-radius:5px;font-size:10px;font-weight:500;margin-left:3px;vertical-align:middle}
+.b-ok{background:var(--green-bg);color:var(--green)}
+.b-pend{background:var(--amber-bg);color:var(--amber)}
+.b-eng{background:var(--red-bg);color:var(--red)}
+.b-mod{background:#1e1a3a;color:var(--purple)}
+.b-mc{background:var(--mc-bg);color:var(--mc)}
+.b-visa{background:var(--visa-bg);color:var(--visa)}
+
+/* ALERT */
+.alert-bar{
+  background:var(--red-bg);border:0.5px solid rgba(255,92,92,.3);
+  border-radius:12px;padding:10px 14px;font-size:12px;color:var(--red);
+  margin-bottom:12px;display:flex;gap:8px;align-items:flex-start;line-height:1.5
+}
+
+/* CARTES SECTION dans accueil */
+.carte-strip{background:var(--card);border-radius:14px;border:0.5px solid var(--border);padding:14px 16px;margin-bottom:10px}
+.carte-strip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.carte-strip-name{font-size:13px;font-weight:500}
+.carte-strip-amount{font-size:16px;font-weight:700;letter-spacing:-.5px}
+.carte-strip-body{display:flex;flex-direction:column;gap:4px}
+.carte-item{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.carte-item-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:65%}
+
+/* FORM */
+.form-section{padding:16px}
+.f-card{background:var(--card);border-radius:16px;border:0.5px solid var(--border);padding:16px;margin-bottom:12px}
+.f-group{margin-bottom:14px}
+.f-label{font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;display:block}
+.f-input{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;padding:11px 14px;font-size:15px;font-family:inherit;color:var(--text);-webkit-appearance:none;outline:none}
+.f-input:focus{border-color:var(--blue);background:var(--bg2)}
+.seg{display:flex;background:var(--bg3);border-radius:10px;padding:3px;gap:3px;margin-bottom:14px}
+.seg-btn{flex:1;padding:8px 4px;border:none;background:none;border-radius:8px;font-size:13px;font-family:inherit;color:var(--muted);cursor:pointer;transition:.15s}
+.seg-btn.active{background:var(--bg2);color:var(--text);font-weight:500}
+.debit-hint{background:var(--blue-bg);border-radius:10px;padding:9px 13px;font-size:12px;color:var(--blue);margin-bottom:14px;line-height:1.4}
+.btn-primary{width:100%;background:var(--blue);color:#fff;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;letter-spacing:-.2px}
+.btn-primary:active{opacity:.8}
+.btn-danger{width:100%;background:var(--red-bg);color:var(--red);border:0.5px solid rgba(255,92,92,.3);border-radius:12px;padding:12px;font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;margin-top:8px}
+
+/* PROJECTION ROW */
+.prow{display:flex;align-items:center;padding:10px 16px;border-bottom:0.5px solid var(--border);gap:8px}
+.prow:last-child{border-bottom:none}
+.prow-date{font-size:11px;color:var(--muted);width:34px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.prow-label{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow-amount{font-size:12px;font-weight:600;width:70px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums}
+.prow-bal{font-size:11px;color:var(--muted);width:65px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums}
+.prow.warn{background:rgba(255,92,92,.05)}
+
+/* HISTORIQUE */
+.hist-filters{display:flex;gap:8px;margin-bottom:12px;padding:0 16px}
+.hist-filters select,.hist-filters input{background:var(--card);border:0.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--text);-webkit-appearance:none;outline:none}
+.hist-filters select{flex:1}
+.hist-filters input{flex:2}
+.hrow{display:flex;align-items:center;padding:10px 16px;border-bottom:0.5px solid var(--border);gap:8px}
+.hrow:last-child{border-bottom:none}
+.hrow.done{opacity:.45}
+.hrow-meta{display:flex;flex-direction:column;gap:2px;width:46px;flex-shrink:0}
+.hrow-date{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+.hrow-label{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hrow-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
+.hrow-amount{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.hrow-solde{font-size:10px;color:var(--subtle)}
+.hrow-actions{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.action-btn{background:none;border:none;font-size:17px;padding:2px 3px;cursor:pointer;line-height:1;color:var(--muted)}
+.edit-btn{background:var(--bg3);border:0.5px solid var(--border2);border-radius:6px;font-size:11px;padding:3px 7px;color:var(--blue);cursor:pointer;font-family:inherit}
+
+/* SHEET */
+#sheet-wrap{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+#sheet{position:absolute;bottom:0;left:0;right:0;background:var(--bg2);border-radius:24px 24px 0 0;padding:20px 20px calc(20px + var(--safe-bottom));max-height:88vh;overflow-y:auto}
+.sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 18px}
+#sheet h3{font-size:17px;font-weight:600;margin-bottom:3px}
+#sheet-sub{font-size:12px;color:var(--muted);margin-bottom:18px}
+.sheet-btns{display:flex;gap:10px;margin-top:8px}
+.sbtn{flex:1;padding:13px;border-radius:12px;font-size:14px;font-family:inherit;font-weight:500;cursor:pointer;border:none}
+.sbtn.save{background:var(--blue);color:#fff}
+.sbtn.cancel{background:var(--bg3);color:var(--text)}
+.sbtn.reset{background:var(--red-bg);color:var(--red);flex:.5;border:0.5px solid rgba(255,92,92,.3)}
+
+/* STORAGE INFO */
+.storage-info{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
 </style>
 </head>
 <body>
 <div id="app">
   <div id="header">
-    <h1>Mon Budget</h1>
-    <div class="sub" id="hdr-sub">chargement…</div>
+    <div>
+      <h1>Mon Budget</h1>
+      <div id="hdr-date" style="font-size:12px;color:var(--muted);margin-top:2px">—</div>
+    </div>
+    <div id="save-dot"></div>
   </div>
 
   <div id="content">
-    <!-- DASHBOARD -->
-    <div class="section active" id="s-dashboard">
-      <div class="metric-grid">
-        <div class="metric"><div class="metric-lbl">Solde actuel</div><div class="metric-val green" id="m-solde">—</div></div>
-        <div class="metric"><div class="metric-lbl">Aujourd'hui</div><div class="metric-val full" id="m-today">—</div></div>
-        <div class="metric"><div class="metric-lbl">Prochain MC</div><div class="metric-val red" id="m-mc">—</div></div>
-        <div class="metric"><div class="metric-lbl">Prochain VISA</div><div class="metric-val red" id="m-visa">—</div></div>
+    <!-- ACCUEIL -->
+    <div class="section active" id="s-home">
+      <div class="solde-hero">
+        <div class="solde-label">Solde compte courant</div>
+        <div class="solde-value pos" id="m-solde">—</div>
+        <div class="solde-sub" id="m-solde-sub">—</div>
       </div>
-      <div id="dash-alert"></div>
-      <div class="card">
-        <div class="card-head">Échéances — 14 prochains jours</div>
-        <div class="card-body" id="ech-list"></div>
+
+      <div class="cards-row">
+        <div class="mini-card">
+          <div class="mini-card-label">
+            <span style="width:7px;height:7px;border-radius:50%;background:var(--mc);display:inline-block"></span>
+            Mastercard
+          </div>
+          <div class="mini-card-val red" id="m-mc-val">—</div>
+          <div class="mini-card-sub" id="m-mc-sub" style="color:var(--muted)">—</div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-label">
+            <span style="width:7px;height:7px;border-radius:50%;background:var(--visa);display:inline-block"></span>
+            VISA
+          </div>
+          <div class="mini-card-val" id="m-visa-val" style="color:var(--amber)">—</div>
+          <div class="mini-card-sub" id="m-visa-sub" style="color:var(--muted)">—</div>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-head">Cartes — en attente de débit</div>
-        <div class="card-body" id="pending-list"></div>
+
+      <div id="home-alert"></div>
+
+      <div class="section-title">Échéances — 14 jours</div>
+      <div class="list-card" id="ech-card">
+        <div id="ech-list"></div>
       </div>
+
+      <div class="section-title">Cartes — dépenses en attente</div>
+      <div id="cartes-pending"></div>
     </div>
 
-    <!-- SAISIE -->
-    <div class="section" id="s-saisie">
-      <div class="card" style="padding:14px;overflow:visible">
-        <div class="form-group">
-          <label class="form-label">Libellé</label>
-          <input class="form-control" type="text" id="f-label" placeholder="ex : courses Colruyt">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Montant (€)</label>
-          <input class="form-control" type="number" id="f-amount" placeholder="0,00" step="0.01" min="0.01" inputmode="decimal">
-        </div>
-        <label class="form-label">Moyen de paiement</label>
+    <!-- AJOUTER -->
+    <div class="section" id="s-add">
+      <div class="f-card">
+        <div class="f-group"><label class="f-label">Libellé</label><input class="f-input" type="text" id="f-label" placeholder="ex : courses Colruyt" autocomplete="off"></div>
+        <div class="f-group"><label class="f-label">Montant (€)</label><input class="f-input" type="number" id="f-amount" placeholder="0,00" step="0.01" min="0.01" inputmode="decimal"></div>
+        <label class="f-label">Moyen de paiement</label>
         <div class="seg" id="seg-moyen">
           <button class="seg-btn active" data-val="CC">Compte</button>
           <button class="seg-btn" data-val="MC">Mastercard</button>
           <button class="seg-btn" data-val="VISA">VISA</button>
         </div>
-        <div class="form-group">
-          <label class="form-label">Date de la dépense</label>
-          <input class="form-control" type="date" id="f-date" onchange="updateHint()">
-        </div>
+        <div class="f-group"><label class="f-label">Date de la dépense</label><input class="f-input" type="date" id="f-date" onchange="updateHint()"></div>
         <div class="debit-hint" id="debit-hint">Sélectionne une date pour voir la date de débit.</div>
-        <div class="form-group">
-          <label class="form-label">Catégorie</label>
-          <select class="form-control" id="f-cat">
-            <option value="Alimentation">Alimentation</option>
-            <option value="Carburant">Carburant</option>
-            <option value="Enfants">Enfants</option>
-            <option value="Loisirs">Loisirs</option>
-            <option value="Maison">Maison</option>
-            <option value="Restaurant">Restaurant</option>
-            <option value="Santé">Santé</option>
-            <option value="Transport">Transport</option>
-            <option value="Vêtements">Vêtements</option>
-            <option value="Divers">Divers</option>
+        <div class="f-group">
+          <label class="f-label">Catégorie</label>
+          <select class="f-input" id="f-cat">
+            <option value="Alimentation">Alimentation</option><option value="Carburant">Carburant</option>
+            <option value="Enfants">Enfants</option><option value="Loisirs">Loisirs</option>
+            <option value="Maison">Maison</option><option value="Restaurant">Restaurant</option>
+            <option value="Santé">Santé</option><option value="Transport">Transport</option>
+            <option value="Vêtements">Vêtements</option><option value="Divers">Divers</option>
           </select>
         </div>
-        <button class="btn-add" onclick="addDepense()">Ajouter la dépense</button>
+        <button class="btn-primary" onclick="addDepense()">Ajouter la dépense</button>
       </div>
-    </div>
 
-    <!-- CARTES -->
-    <div class="section" id="s-cartes">
-      <div class="card-summary-grid">
-        <div class="cs"><div class="cs-head" style="color:var(--muted)">Compte</div><div class="cs-val green" id="cs-cc">—</div><div class="cs-sub">Solde validé</div></div>
-        <div class="cs"><div class="cs-head" style="color:var(--mc)">Mastercard</div><div class="cs-val red" id="cs-mc">—</div><div class="cs-sub" id="cs-mc-sub">—</div></div>
-        <div class="cs"><div class="cs-head" style="color:var(--visa)">VISA</div><div class="cs-val red" id="cs-visa">—</div><div class="cs-sub" id="cs-visa-sub">—</div></div>
+      <div class="f-card">
+        <div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--text)">Données sauvegardées</div>
+        <div class="storage-info" id="storage-info">—</div>
+        <button class="btn-danger" onclick="confirmReset()">Réinitialiser toutes les données</button>
       </div>
-      <div class="card"><div class="card-head" style="color:var(--mc)">Mastercard — dépenses saisies</div><div class="card-body" id="mc-list"></div></div>
-      <div class="card"><div class="card-head" style="color:var(--visa)">VISA — dépenses saisies</div><div class="card-body" id="visa-list"></div></div>
-      <div class="card"><div class="card-head">Compte courant — dépenses saisies</div><div class="card-body" id="cc-list"></div></div>
     </div>
 
     <!-- PROJECTION -->
-    <div class="section" id="s-projection">
-      <div class="card">
-        <div class="card-head">Mouvements à venir — appui long pour modifier</div>
+    <div class="section" id="s-proj">
+      <div style="font-size:12px;color:var(--muted);padding:0 2px 10px;line-height:1.5">Appui long sur une ligne pour modifier son montant, sa date ou son libellé.</div>
+      <div class="list-card">
         <div id="proj-list"></div>
       </div>
     </div>
 
     <!-- HISTORIQUE -->
-    <div class="section" id="s-historique">
+    <div class="section" id="s-histo">
       <div class="hist-filters">
         <select id="filt-mois" onchange="renderHisto()">
           <option value="">Tous</option>
-          <option value="2026-04">Avr 26</option>
-          <option value="2026-05">Mai 26</option>
-          <option value="2026-06" selected>Juin 26</option>
-          <option value="2026-07">Juil 26</option>
+          <option value="2026-04">Avr 26</option><option value="2026-05">Mai 26</option>
+          <option value="2026-06" selected>Juin 26</option><option value="2026-07">Juil 26</option>
           <option value="2026-08">Août 26</option>
         </select>
         <select id="filt-type" onchange="renderHisto()">
-          <option value="">Tout</option>
-          <option value="recette">Recettes</option>
-          <option value="depense">Dépenses</option>
+          <option value="">Tout</option><option value="recette">Recettes</option><option value="depense">Dépenses</option>
         </select>
         <input type="text" id="filt-search" placeholder="Chercher…" oninput="renderHisto()">
       </div>
-      <div class="card"><div class="card-body" id="histo-list"></div></div>
+      <div class="list-card"><div id="histo-list"></div></div>
     </div>
   </div>
 
+  <!-- TABS -->
   <div id="tabs">
-    <button class="tab-btn active" onclick="showTab('dashboard',this)">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Vue d'ensemble
+    <button class="tab-btn active" onclick="showTab('home',this)">
+      <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+      Accueil
+      <div class="tab-dot"></div>
     </button>
-    <button class="tab-btn" onclick="showTab('saisie',this)">
+    <button class="tab-btn" onclick="showTab('add',this)">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
       Ajouter
+      <div class="tab-dot"></div>
     </button>
-    <button class="tab-btn" onclick="showTab('cartes',this)">
-      <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-      Cartes
-    </button>
-    <button class="tab-btn" onclick="showTab('projection',this)">
+    <button class="tab-btn" onclick="showTab('proj',this)">
       <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
       Projection
+      <div class="tab-dot"></div>
     </button>
-    <button class="tab-btn" onclick="showTab('historique',this)">
+    <button class="tab-btn" onclick="showTab('histo',this)">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
       Historique
+      <div class="tab-dot"></div>
     </button>
   </div>
 </div>
 
-<!-- EDIT SHEET -->
-<div id="edit-sheet-wrap" onclick="if(event.target===this)closeSheet()">
-  <div id="edit-sheet">
-    <h3>Modifier la transaction</h3>
-    <div class="form-group"><label class="form-label">Libellé</label><input class="form-control" type="text" id="sh-label"></div>
-    <div class="form-group"><label class="form-label">Date</label><input class="form-control" type="date" id="sh-date"></div>
-    <div class="form-group"><label class="form-label">Montant (€)</label><input class="form-control" type="number" id="sh-amount" step="0.01" min="0.01" inputmode="decimal"></div>
+<!-- SHEET MODIFIER -->
+<div id="sheet-wrap" onclick="if(event.target===this)closeSheet()">
+  <div id="sheet">
+    <div class="sheet-handle"></div>
+    <h3>Modifier</h3>
+    <div id="sheet-sub">—</div>
+    <div class="f-group" style="margin-top:4px"><label class="f-label">Libellé</label><input class="f-input" type="text" id="sh-label"></div>
+    <div class="f-group"><label class="f-label">Date</label><input class="f-input" type="date" id="sh-date"></div>
+    <div class="f-group"><label class="f-label">Montant (€)</label><input class="f-input" type="number" id="sh-amount" step="0.01" min="0.01" inputmode="decimal"></div>
     <div class="sheet-btns">
-      <button class="sheet-btn reset" onclick="resetSheet()">↩ Reset</button>
-      <button class="sheet-btn cancel" onclick="closeSheet()">Annuler</button>
-      <button class="sheet-btn save" onclick="saveSheet()">Enregistrer</button>
+      <button class="sbtn reset" onclick="resetSheet()">↩</button>
+      <button class="sbtn cancel" onclick="closeSheet()">Annuler</button>
+      <button class="sbtn save" onclick="saveSheet()">Enregistrer</button>
     </div>
   </div>
 </div>
@@ -252,6 +365,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
 <script>
 const SOLDE_SEED={date:'2026-06-10',solde:926.67};
 const REAL_TODAY=new Date().toISOString().slice(0,10);
+const SK='monbudget_v1';
+
 const fmt=v=>{if(v===null||v===undefined)return'—';const a=Math.abs(v).toLocaleString('fr-BE',{minimumFractionDigits:2,maximumFractionDigits:2});return(v<0?'- ':'')+a+' €';};
 const fmtD=s=>{if(!s)return'—';return new Date(s+'T00:00:00').toLocaleDateString('fr-BE',{day:'2-digit',month:'2-digit'});};
 const fmtDL=s=>{if(!s)return'—';return new Date(s+'T00:00:00').toLocaleDateString('fr-BE',{day:'2-digit',month:'2-digit',year:'2-digit'});};
@@ -302,17 +417,57 @@ let overrides={};
 let sheetId=null;
 let selMoyen='CC';
 
-function getDebitDate(moyen,ds){
-  const d=new Date(ds+'T00:00:00'),day=d.getDate(),m=d.getMonth(),y=d.getFullYear();
-  if(moyen==='CC')return ds;
-  if(moyen==='MC'){if(day<=7)return`${y}-${String(m+1).padStart(2,'0')}-14`;const nm=m===11?0:m+1,ny=m===11?y+1:y;return`${ny}-${String(nm+1).padStart(2,'0')}-14`;}
-  if(moyen==='VISA'){if(day<=23){const nm=m===11?0:m+1,ny=m===11?y+1:y;return`${ny}-${String(nm+1).padStart(2,'0')}-01`;}const nm=m>=10?0:m+2,ny=m>=10?y+1:y;return`${ny}-${String(nm+1).padStart(2,'0')}-01`;}
+// STORAGE
+function saveState(){
+  try{
+    localStorage.setItem(SK,JSON.stringify({doneSet:Array.from(doneSet),userExpenses,overrides,savedAt:new Date().toISOString()}));
+    const d=document.getElementById('save-dot');
+    d.classList.add('show');setTimeout(()=>d.classList.remove('show'),1200);
+    updateStorageInfo();
+  }catch(e){}
+}
+function loadState(){
+  try{
+    const r=localStorage.getItem(SK);if(!r)return;
+    const s=JSON.parse(r);
+    if(s.doneSet)doneSet=new Set(s.doneSet);
+    if(s.userExpenses)userExpenses=s.userExpenses;
+    if(s.overrides)overrides=s.overrides;
+  }catch(e){}
+}
+function updateStorageInfo(){
+  try{
+    const r=localStorage.getItem(SK);
+    if(!r){document.getElementById('storage-info').textContent='Aucune donnée sauvegardée.';return;}
+    const s=JSON.parse(r);
+    const d=new Date(s.savedAt);
+    document.getElementById('storage-info').textContent=
+      `Dernière sauvegarde ${d.toLocaleDateString('fr-BE',{day:'2-digit',month:'2-digit'})} à ${d.toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})} — ${s.doneSet?.length||0} validations · ${s.userExpenses?.length||0} dépenses · ${Object.keys(s.overrides||{}).length} modifications`;
+  }catch(e){}
+}
+function confirmReset(){
+  if(confirm('Supprimer toutes les données ? Cette action est irréversible.')){
+    localStorage.removeItem(SK);
+    doneSet=new Set(['b20b']);userExpenses=[];overrides={};
+    refreshAll();updateStorageInfo();
+  }
+}
+
+// LOGIQUE
+function getDebitDate(m,ds){
+  const d=new Date(ds+'T00:00:00'),day=d.getDate(),mo=d.getMonth(),y=d.getFullYear();
+  if(m==='CC')return ds;
+  if(m==='MC'){if(day<=7)return`${y}-${String(mo+1).padStart(2,'0')}-14`;const nm=mo===11?0:mo+1,ny=mo===11?y+1:y;return`${ny}-${String(nm+1).padStart(2,'0')}-14`;}
+  if(m==='VISA'){if(day<=23){const nm=mo===11?0:mo+1,ny=mo===11?y+1:y;return`${ny}-${String(nm+1).padStart(2,'0')}-01`;}const nm=mo>=10?0:mo+2,ny=mo>=10?y+1:y;return`${ny}-${String(nm+1).padStart(2,'0')}-01`;}
   return ds;
 }
 function getNextCycle(ct){
   const d=new Date(REAL_TODAY+'T00:00:00'),day=d.getDate(),m=d.getMonth(),y=d.getFullYear();
   if(ct==='MC'){if(day<=7)return{cd:`${y}-${String(m+1).padStart(2,'0')}-07`,dd:`${y}-${String(m+1).padStart(2,'0')}-14`};const nm=m===11?0:m+1,ny=m===11?y+1:y;return{cd:`${ny}-${String(nm+1).padStart(2,'0')}-07`,dd:`${ny}-${String(nm+1).padStart(2,'0')}-14`};}
-  if(ct==='VISA'){if(day<=23){const nm=m===11?0:m+1,ny=m===11?y+1:y;return{cd:`${y}-${String(m+1).padStart(2,'0')}-23`,dd:`${ny}-${String(nm+1).padStart(2,'0')}-01`};}const nm=m===11?0:m+1,ny=m===11?y+1:y;const nm2=nm===11?0:nm+1,ny2=nm===11?ny+1:ny;return{cd:`${ny}-${String(nm+1).padStart(2,'0')}-23`,dd:`${ny2}-${String(nm2+1).padStart(2,'0')}-01`};}
+  const nm=m===11?0:m+1,ny=m===11?y+1:y;
+  if(day<=23)return{cd:`${y}-${String(m+1).padStart(2,'0')}-23`,dd:`${ny}-${String(nm+1).padStart(2,'0')}-01`};
+  const nm2=nm===11?0:nm+1,ny2=nm===11?ny+1:ny;
+  return{cd:`${ny}-${String(nm+1).padStart(2,'0')}-23`,dd:`${ny2}-${String(nm2+1).padStart(2,'0')}-01`};
 }
 function getCardDebit(ct,dd){
   if(ct==='MC'&&dd==='2026-06-14')return -551.82;
@@ -320,7 +475,10 @@ function getCardDebit(ct,dd){
   const tot=userExpenses.filter(e=>e.moyen===ct&&e.debitDate===dd).reduce((s,e)=>s+Math.abs(e.montant),0);
   return tot>0?-tot:0;
 }
-function applyOv(t){const ov=overrides[t.id];if(!ov)return t;return{...t,label:ov.label!==undefined?ov.label:t.label,date:ov.date!==undefined?ov.date:t.date,montant:ov.montant!==undefined?ov.montant:t.montant};}
+function applyOv(t){
+  const ov=overrides[t.id];if(!ov)return t;
+  return{...t,label:ov.label!==undefined?ov.label:t.label,date:ov.date!==undefined?ov.date:t.date,montant:ov.montant!==undefined?ov.montant:t.montant};
+}
 function getAllTx(){
   const all=BASE_TX.map(t=>{let m=t.montant;if(t.type==='card_debit'&&m===0)m=getCardDebit(t.cardType,t.date);return applyOv({...t,montant:m,done:doneSet.has(t.id)});}).filter(t=>t.montant!==0);
   const extra=userExpenses.filter(e=>e.moyen==='CC').map(e=>applyOv({id:'u'+e.id,date:e.debitDate,label:e.label,montant:e.montant,done:doneSet.has('u'+e.id),type:'user',userAdded:true}));
@@ -339,129 +497,18 @@ function computeProj(){
   return{rows,currentSolde:cs};
 }
 
-function renderDashboard(){
-  const{currentSolde}=computeProj();
-  document.getElementById('m-solde').textContent=fmt(currentSolde);
-  document.getElementById('m-solde').className='metric-val '+(currentSolde<0?'red':'green');
-  const now=new Date();
-  document.getElementById('m-today').textContent=now.toLocaleDateString('fr-BE',{weekday:'short',day:'2-digit',month:'short'});
-  document.getElementById('hdr-sub').textContent=now.toLocaleDateString('fr-BE',{day:'2-digit',month:'long',year:'numeric'});
-  const b25=getAllTx().find(t=>t.id==='b25');
-  const b37=getAllTx().find(t=>t.id==='b37');
-  document.getElementById('m-mc').textContent=b25&&!b25.done?fmt(b25.montant)+' · '+fmtD(b25.date):'—';
-  document.getElementById('m-visa').textContent=b37&&!b37.done?fmt(b37.montant)+' · '+fmtD(b37.date):'—';
-  // Alert
-  const near=getAllTx().filter(t=>!t.done&&t.date>=REAL_TODAY&&t.date<=addDays(REAL_TODAY,7));
-  let nb=currentSolde;near.forEach(t=>nb=Math.round((nb+t.montant)*100)/100);
-  document.getElementById('dash-alert').innerHTML=nb<0?`<div class="alert">⚠️ Solde prévu dans 7 jours : <strong>${fmt(nb)}</strong>. Attention aux décaissements imminents.</div>`:'';
-  // Echéances 14j
-  const horizon=addDays(REAL_TODAY,14);
-  const ech=getAllTx().filter(t=>!t.done&&t.date>=REAL_TODAY&&t.date<=horizon&&t.montant!==0);
-  document.getElementById('ech-list').innerHTML=ech.length?ech.map(t=>{
-    const imminent=t.date<=addDays(REAL_TODAY,3);
-    const isEngaged=t.engaged||false;
-    let cls='row'+(isEngaged?' imminent-red':imminent?' imminent':'');
-    const badge=isEngaged?'<span class="badge badge-eng">En cours</span>':'';
-    return`<div class="${cls}"><span class="row-date">${fmtD(t.date)}</span><span class="row-label">${t.label}${badge}</span><span class="row-amount ${t.montant<0?'red':'green'}">${fmt(t.montant)}</span></div>`;
-  }).join(''):'<div class="row"><span class="row-label" style="color:var(--muted)">Aucune échéance dans 14 jours.</span></div>';
-  // Cartes pending
-  const b25p=getAllTx().find(t=>t.id==='b25'&&!t.done);
-  const b37p=getAllTx().find(t=>t.id==='b37'&&!t.done);
-  const mc=getNextCycle('MC'),visa=getNextCycle('VISA');
-  const mcE=userExpenses.filter(e=>e.moyen==='MC'&&e.debitDate===mc.dd);
-  const visaE=userExpenses.filter(e=>e.moyen==='VISA'&&e.debitDate===visa.dd);
-  let html='';
-  if(b25p)html+=`<div class="row imminent-red"><span class="row-date" style="color:var(--mc);font-weight:500">MC</span><span class="row-label">${b25p.label} <span class="badge badge-eng">En cours</span></span><span class="row-amount red">${fmt(b25p.montant)}</span></div>`;
-  else if(mcE.length){const tot=mcE.reduce((s,e)=>s+Math.abs(e.montant),0);html+=`<div class="row"><span class="row-date" style="color:var(--mc);font-weight:500">MC</span><span class="row-label">${mcE.length} dép. · ${fmtD(mc.dd)}</span><span class="row-amount red">${fmt(-tot)}</span></div>`;}
-  if(b37p)html+=`<div class="row" style="background:#fef9f0"><span class="row-date" style="color:var(--visa);font-weight:500">VISA</span><span class="row-label">${b37p.label} <span class="badge badge-eng">En cours</span></span><span class="row-amount red">${fmt(b37p.montant)}</span></div>`;
-  else if(visaE.length){const tot=visaE.reduce((s,e)=>s+Math.abs(e.montant),0);html+=`<div class="row"><span class="row-date" style="color:var(--visa);font-weight:500">VISA</span><span class="row-label">${visaE.length} dép. · ${fmtD(visa.dd)}</span><span class="row-amount red">${fmt(-tot)}</span></div>`;}
-  if(!html)html='<div class="row"><span class="row-label" style="color:var(--muted)">Aucune dépense carte en attente.</span></div>';
-  document.getElementById('pending-list').innerHTML=html;
-}
-
-function renderCartes(){
-  const{currentSolde}=computeProj();
-  document.getElementById('cs-cc').textContent=fmt(currentSolde);
-  document.getElementById('cs-cc').className='cs-val '+(currentSolde<0?'red':'green');
-  const mc=getNextCycle('MC'),visa=getNextCycle('VISA');
-  const mcE=userExpenses.filter(e=>e.moyen==='MC');
-  const visaE=userExpenses.filter(e=>e.moyen==='VISA');
-  const mcTot=mcE.reduce((s,e)=>s+Math.abs(e.montant),0);
-  const visaTot=visaE.reduce((s,e)=>s+Math.abs(e.montant),0);
-  document.getElementById('cs-mc').textContent=mcTot?fmt(-mcTot):'0,00 €';
-  document.getElementById('cs-mc-sub').textContent='Débit '+fmtD(mc.dd);
-  document.getElementById('cs-visa').textContent=visaTot?fmt(-visaTot):'0,00 €';
-  document.getElementById('cs-visa-sub').textContent='Débit '+fmtD(visa.dd);
-  const renderList=(items,elId)=>{
-    const el=document.getElementById(elId);
-    if(!items.length){el.innerHTML='<div class="row"><span class="row-label" style="color:var(--muted)">Aucune dépense saisie.</span></div>';return;}
-    el.innerHTML=items.map(e=>`<div class="row"><span class="row-date">${fmtD(e.date)}</span><span class="row-label">${e.label}</span><span class="row-amount red">${fmt(e.montant)}</span></div>`).join('');
-  };
-  renderList(mcE,'mc-list');renderList(visaE,'visa-list');
-  renderList(userExpenses.filter(e=>e.moyen==='CC'),'cc-list');
-}
-
-function renderProjection(){
-  const{rows}=computeProj();
-  const el=document.getElementById('proj-list');
-  if(!rows.length){el.innerHTML='<div class="proj-row"><span class="proj-label" style="color:var(--muted)">Aucun mouvement prévu.</span></div>';return;}
-  el.innerHTML=rows.map(r=>{
-    const mod=overrides[r.id]?'<span class="badge badge-mod"> mod.</span>':'';
-    const badge=r.engaged?'<span class="badge badge-eng"> EC</span>':'';
-    return`<div class="proj-row ${r.runBal<0?'warn-row':''}" data-id="${r.id}" ontouchstart="startLongPress('${r.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()">
-      <span class="proj-date">${fmtD(r.date)}</span>
-      <span class="proj-label">${r.label}${badge}${mod}</span>
-      <span class="proj-amount ${r.montant<0?'red':'green'}">${fmt(r.montant)}</span>
-      <span class="proj-balance ${r.runBal<0?'red':''}">${fmt(r.runBal)}</span>
-    </div>`;
-  }).join('');
-}
-
-function renderHisto(){
-  const mois=document.getElementById('filt-mois').value;
-  const type=document.getElementById('filt-type').value;
-  const search=document.getElementById('filt-search').value.toLowerCase();
-  let rows=getAllTx().filter(t=>{
-    if(mois&&!t.date.startsWith(mois))return false;
-    if(type==='recette'&&t.montant<=0)return false;
-    if(type==='depense'&&t.montant>=0)return false;
-    if(search&&!t.label.toLowerCase().includes(search))return false;
-    return true;
-  }).sort((a,b)=>b.date.localeCompare(a.date));
-  let rb=SOLDE_SEED.solde;const sm={};
-  getAllTx().sort((a,b)=>a.date.localeCompare(b.date)).forEach(t=>{rb=Math.round((rb+t.montant)*100)/100;sm[t.id]=rb;});
-  const el=document.getElementById('histo-list');
-  el.innerHTML=rows.map(t=>{
-    const status=t.done?'<span class="badge badge-ok">OK</span>':t.engaged?'<span class="badge badge-eng">EC</span>':'<span class="badge badge-pend">Prévu</span>';
-    const btn=t.done
-      ?`<span style="font-size:18px;cursor:pointer;padding:4px;color:var(--muted)" onclick="unvalidate('${t.id}')">↩</span>`
-      :`<span style="font-size:18px;cursor:pointer;padding:4px;color:var(--green)" onclick="validate('${t.id}')">✓</span>`;
-    return`<div class="row ${t.done?'':''}">
-      <span class="row-date" style="font-size:11px">${fmtDL(t.date)}</span>
-      <span class="row-label" style="font-size:12px">${t.label} ${status}</span>
-      <span style="display:flex;flex-direction:column;align-items:flex-end;gap:1px">
-        <span class="${t.montant<0?'red':'green'}" style="font-size:12px;font-weight:500">${fmt(t.montant)}</span>
-        <span style="font-size:10px;color:var(--muted)">${fmt(sm[t.id])}</span>
-      </span>
-      ${btn}
-    </div>`;
-  }).join('');
-}
-
-// Long press pour ouvrir l'édition en projection
-let lpTimer=null;
-function startLongPress(id){lpTimer=setTimeout(()=>openSheet(id),600);}
-function cancelLongPress(){clearTimeout(lpTimer);}
-
+// SHEET
 function openSheet(id){
   const tx=getAllTx().find(t=>t.id===id);if(!tx)return;
   sheetId=id;
+  document.getElementById('sheet-sub').textContent=tx.done?'Transaction validée':'Transaction prévue';
   document.getElementById('sh-label').value=tx.label;
   document.getElementById('sh-date').value=tx.date;
   document.getElementById('sh-amount').value=Math.abs(tx.montant).toFixed(2);
-  document.getElementById('edit-sheet-wrap').style.display='block';
+  document.getElementById('sheet-wrap').style.display='block';
+  setTimeout(()=>document.getElementById('sh-label').focus(),100);
 }
-function closeSheet(){document.getElementById('edit-sheet-wrap').style.display='none';sheetId=null;}
+function closeSheet(){document.getElementById('sheet-wrap').style.display='none';sheetId=null;}
 function saveSheet(){
   if(!sheetId)return;
   const tx=getAllTx().find(t=>t.id===sheetId);if(!tx){closeSheet();return;}
@@ -471,32 +518,154 @@ function saveSheet(){
   if(!lbl||!dt||isNaN(amt)||amt<=0){alert('Tous les champs sont requis.');return;}
   if(!overrides[sheetId])overrides[sheetId]={};
   overrides[sheetId].label=lbl;overrides[sheetId].date=dt;overrides[sheetId].montant=(tx.montant<0?-1:1)*amt;
-  closeSheet();refreshAll();
+  closeSheet();refreshAll();saveState();
 }
-function resetSheet(){if(!sheetId)return;delete overrides[sheetId];closeSheet();refreshAll();}
+function resetSheet(){if(!sheetId)return;delete overrides[sheetId];closeSheet();refreshAll();saveState();}
+function validate(id){doneSet.add(id);refreshAll();saveState();}
+function unvalidate(id){doneSet.delete(id);refreshAll();saveState();}
 
-function validate(id){doneSet.add(id);refreshAll();}
-function unvalidate(id){doneSet.delete(id);refreshAll();}
+let lpTimer=null;
+function startLP(id){lpTimer=setTimeout(()=>openSheet(id),550);}
+function cancelLP(){clearTimeout(lpTimer);}
 
-// Saisie
+// RENDER ACCUEIL
+function renderHome(){
+  const{currentSolde,rows}=computeProj();
+  // Solde hero
+  const el=document.getElementById('m-solde');
+  el.textContent=fmt(currentSolde);
+  el.className='solde-value '+(currentSolde<0?'neg':'pos');
+  // Solde sub : prochain mouvement
+  const next=getAllTx().find(t=>!t.done&&t.date>=REAL_TODAY&&t.montant!==0);
+  document.getElementById('m-solde-sub').textContent=next?`Prochain mouvement : ${fmt(next.montant)} le ${fmtD(next.date)}`:'Aucun mouvement prévu';
+  // Date header
+  document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('fr-BE',{weekday:'long',day:'numeric',month:'long'});
+  // Cartes
+  const b25=getAllTx().find(t=>t.id==='b25');
+  const b37=getAllTx().find(t=>t.id==='b37');
+  const mc=getNextCycle('MC'),visa=getNextCycle('VISA');
+  const mcE=userExpenses.filter(e=>e.moyen==='MC');
+  const visaE=userExpenses.filter(e=>e.moyen==='VISA');
+  const mcEngaged=b25&&!b25.done;
+  const visaEngaged=b37&&!b37.done;
+  const mcTot=mcEngaged?Math.abs(b25.montant):mcE.reduce((s,e)=>s+Math.abs(e.montant),0);
+  const visaTot=visaEngaged?Math.abs(b37.montant):visaE.reduce((s,e)=>s+Math.abs(e.montant),0);
+  document.getElementById('m-mc-val').textContent=mcTot?fmt(-mcTot):'0,00 €';
+  document.getElementById('m-mc-sub').textContent=(mcEngaged?'En cours · ':'')+`Débit le ${fmtD(mcEngaged?b25.date:mc.dd)}`;
+  document.getElementById('m-visa-val').textContent=visaTot?fmt(-visaTot):'0,00 €';
+  document.getElementById('m-visa-sub').textContent=(visaEngaged?'En cours · ':'')+`Débit le ${fmtD(visaEngaged?b37.date:visa.dd)}`;
+  // Alert 7j
+  const near=getAllTx().filter(t=>!t.done&&t.date>=REAL_TODAY&&t.date<=addDays(REAL_TODAY,7));
+  let nb=currentSolde;near.forEach(t=>nb=Math.round((nb+t.montant)*100)/100);
+  document.getElementById('home-alert').innerHTML=nb<0?`<div class="alert-bar">⚠ Solde prévu dans 7 jours : <strong>${fmt(nb)}</strong></div>`:'';
+  // Échéances 14j
+  const horizon=addDays(REAL_TODAY,14);
+  const ech=getAllTx().filter(t=>!t.done&&t.date>=REAL_TODAY&&t.date<=horizon&&t.montant!==0);
+  document.getElementById('ech-list').innerHTML=ech.length?ech.map(t=>{
+    const d3=t.date<=addDays(REAL_TODAY,3);
+    const cls='lrow'+(t.engaged?' engaged':d3?' urgent':'');
+    const badge=t.engaged?`<span class="badge b-eng">En cours</span>`:'';
+    const mod=overrides[t.id]?`<span class="badge b-mod">mod.</span>`:'';
+    return`<div class="${cls}">
+      <span class="lrow-date">${fmtD(t.date)}</span>
+      <span class="lrow-label">${t.label}${badge}${mod}</span>
+      <span class="lrow-amount ${t.montant<0?'red':'green'}">${fmt(t.montant)}</span>
+    </div>`;
+  }).join(''):`<div class="lrow"><span class="lrow-label" style="color:var(--muted)">Aucune échéance dans 14 jours</span></div>`;
+  // Cartes pending
+  const mcItems=[...(mcEngaged?[{label:b25.label,montant:b25.montant,engaged:true}]:[]),...mcE.map(e=>({label:e.label,montant:e.montant}))];
+  const visaItems=[...(visaEngaged?[{label:b37.label,montant:b37.montant,engaged:true}]:[]),...visaE.map(e=>({label:e.label,montant:e.montant}))];
+  let cpHtml='';
+  if(mcItems.length){
+    const tot=mcItems.reduce((s,e)=>s+Math.abs(e.montant),0);
+    cpHtml+=`<div class="carte-strip">
+      <div class="carte-strip-head">
+        <span class="carte-strip-name" style="color:var(--mc)">● Mastercard${mcEngaged?` <span class="badge b-eng">En cours</span>`:''}</span>
+        <span class="carte-strip-amount red">${fmt(-tot)}</span>
+      </div>
+      <div class="carte-strip-body">${mcItems.map(e=>`<div class="carte-item"><span class="carte-item-label">${e.label}</span><span style="color:var(--red)">${fmt(e.montant)}</span></div>`).join('')}</div>
+    </div>`;
+  }
+  if(visaItems.length){
+    const tot=visaItems.reduce((s,e)=>s+Math.abs(e.montant),0);
+    cpHtml+=`<div class="carte-strip">
+      <div class="carte-strip-head">
+        <span class="carte-strip-name" style="color:var(--visa)">● VISA${visaEngaged?` <span class="badge b-eng">En cours</span>`:''}</span>
+        <span class="carte-strip-amount" style="color:var(--amber)">${fmt(-tot)}</span>
+      </div>
+      <div class="carte-strip-body">${visaItems.map(e=>`<div class="carte-item"><span class="carte-item-label">${e.label}</span><span style="color:var(--amber)">${fmt(e.montant)}</span></div>`).join('')}</div>
+    </div>`;
+  }
+  if(!cpHtml)cpHtml=`<div class="liste-card" style="background:var(--card);border-radius:14px;border:0.5px solid var(--border);padding:14px 16px;color:var(--muted);font-size:13px">Aucune dépense carte en attente</div>`;
+  document.getElementById('cartes-pending').innerHTML=cpHtml;
+}
+
+function renderProj(){
+  const{rows}=computeProj();
+  const el=document.getElementById('proj-list');
+  if(!rows.length){el.innerHTML=`<div class="prow"><span class="prow-label" style="color:var(--muted)">Aucun mouvement prévu.</span></div>`;return;}
+  el.innerHTML=rows.map(r=>{
+    const mod=overrides[r.id]?`<span class="badge b-mod">mod.</span>`:'';
+    const badge=r.engaged?`<span class="badge b-eng">EC</span>`:'';
+    return`<div class="prow ${r.runBal<0?'warn':''}" ontouchstart="startLP('${r.id}')" ontouchend="cancelLP()" ontouchmove="cancelLP()">
+      <span class="prow-date">${fmtD(r.date)}</span>
+      <span class="prow-label">${r.label}${badge}${mod}</span>
+      <span class="prow-amount ${r.montant<0?'red':'green'}">${fmt(r.montant)}</span>
+      <span class="prow-bal ${r.runBal<0?'red':''}">${fmt(r.runBal)}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderHisto(){
+  const mois=document.getElementById('filt-mois').value;
+  const type=document.getElementById('filt-type').value;
+  const search=document.getElementById('filt-search').value.toLowerCase();
+  const rows=getAllTx().filter(t=>{
+    if(mois&&!t.date.startsWith(mois))return false;
+    if(type==='recette'&&t.montant<=0)return false;
+    if(type==='depense'&&t.montant>=0)return false;
+    if(search&&!t.label.toLowerCase().includes(search))return false;
+    return true;
+  }).sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id));
+  let rb=SOLDE_SEED.solde;const sm={};
+  getAllTx().sort((a,b)=>a.date.localeCompare(b.date)).forEach(t=>{rb=Math.round((rb+t.montant)*100)/100;sm[t.id]=rb;});
+  const el=document.getElementById('histo-list');
+  if(!rows.length){el.innerHTML=`<div class="hrow"><span class="hrow-label" style="color:var(--muted)">Aucune transaction.</span></div>`;return;}
+  el.innerHTML=rows.map(t=>{
+    const st=t.done?`<span class="badge b-ok">OK</span>`:t.engaged?`<span class="badge b-eng">EC</span>`:`<span class="badge b-pend">Prévu</span>`;
+    const mod=overrides[t.id]?`<span class="badge b-mod">mod.</span>`:'';
+    const vbtn=t.done
+      ?`<button class="action-btn" onclick="unvalidate('${t.id}')">↩</button>`
+      :`<button class="action-btn" style="color:var(--green)" onclick="validate('${t.id}')">✓</button>`;
+    return`<div class="hrow ${t.done?'done':''}">
+      <div class="hrow-meta"><span class="hrow-date">${fmtDL(t.date)}</span>${st}</div>
+      <span class="hrow-label">${t.label}${mod}</span>
+      <div class="hrow-right">
+        <span class="hrow-amount ${t.montant<0?'red':'green'}">${fmt(t.montant)}</span>
+        <span class="hrow-solde">${fmt(sm[t.id])}</span>
+      </div>
+      <div class="hrow-actions">
+        <button class="edit-btn" onclick="openSheet('${t.id}')">✏</button>
+        ${vbtn}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// SAISIE
 document.querySelectorAll('#seg-moyen .seg-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
     document.querySelectorAll('#seg-moyen .seg-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    selMoyen=btn.dataset.val;
-    updateHint();
+    btn.classList.add('active');selMoyen=btn.dataset.val;updateHint();
   });
 });
-
 function updateHint(){
-  const ds=document.getElementById('f-date').value;
-  const el=document.getElementById('debit-hint');
+  const ds=document.getElementById('f-date').value,el=document.getElementById('debit-hint');
   if(!ds){el.textContent='Sélectionne une date pour voir la date de débit.';return;}
   const debit=getDebitDate(selMoyen,ds);
-  const labels={CC:'Compte courant — débit immédiat',MC:'Mastercard — débité le '+fmtD(debit),VISA:'VISA — débité le '+fmtD(debit)};
-  el.textContent=labels[selMoyen];
+  const map={CC:'Compte courant — débit immédiat',MC:'Mastercard — débité le '+fmtD(debit),VISA:'VISA — débité le '+fmtD(debit)};
+  el.textContent=map[selMoyen];
 }
-
 function addDepense(){
   const label=document.getElementById('f-label').value.trim();
   const amount=parseFloat(document.getElementById('f-amount').value);
@@ -504,25 +673,24 @@ function addDepense(){
   const cat=document.getElementById('f-cat').value;
   if(!label||isNaN(amount)||amount<=0||!ds){alert('Remplis tous les champs.');return;}
   userExpenses.push({id:Date.now(),label,montant:-amount,moyen:selMoyen,date:ds,debitDate:getDebitDate(selMoyen,ds),cat});
-  document.getElementById('f-label').value='';
-  document.getElementById('f-amount').value='';
-  refreshAll();
-  showTabById('dashboard');
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>{b.classList.toggle('active',i===0);});
+  document.getElementById('f-label').value='';document.getElementById('f-amount').value='';
+  refreshAll();saveState();
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s-home').classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
 }
 
-function refreshAll(){renderDashboard();renderCartes();renderProjection();renderHisto();}
-
+function refreshAll(){renderHome();renderProj();renderHisto();}
 function showTab(name,btn){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('s-'+name).classList.add('active');
-  btn.classList.add('active');
+  document.getElementById('s-'+name).classList.add('active');btn.classList.add('active');
 }
-function showTabById(name){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById('s-'+name).classList.add('active');}
 
+loadState();
 document.getElementById('f-date').value=REAL_TODAY;
 refreshAll();
+updateStorageInfo();
 </script>
 </body>
 </html>
