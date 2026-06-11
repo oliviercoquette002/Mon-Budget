@@ -1171,8 +1171,8 @@ function renderBudgetJour(){
 
   elJour.textContent = fmt(best);
   elJour.style.color = best <= 0 ? 'var(--red)' : best < 15 ? 'var(--amber)' : 'var(--green)';
-  const simStartLabel = SIM_START === REAL_TODAY ? "aujourd'hui" : `à partir du \${fmtD(SIM_START)}`;
-  elSub.textContent = `par jour · calculé depuis \${simStartLabel}`;
+  const simStartLabel = SIM_START === REAL_TODAY ? "aujourd'hui" : ("à partir du " + fmtD(SIM_START));
+  elSub.textContent = "par jour · calculé depuis " + simStartLabel;
   elLibre.textContent = fmt(potLibre);
   elLibre.style.color = potLibre < 0 ? 'var(--red)' : 'var(--text)';
   elRest.textContent = `≈ ${totalDays} jours de projection`;
