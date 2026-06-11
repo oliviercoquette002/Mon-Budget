@@ -298,6 +298,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
       <button class="sbtn cancel" onclick="closeSheet()">Annuler</button>
       <button class="sbtn save" onclick="saveSheet()">Enregistrer</button>
     </div>
+    <div id="sheet-delete-wrap" style="display:none;margin-top:10px">
+      <button class="sbtn" style="width:100%;background:var(--red-bg);color:var(--red);border:0.5px solid rgba(255,92,92,.3)" onclick="deleteEntry()">🗑 Supprimer cette transaction</button>
+    </div>
   </div>
 </div>
 
@@ -538,8 +541,22 @@ function openSheet(id){
   document.getElementById('sh-label').value=tx.label;
   document.getElementById('sh-date').value=tx.date;
   document.getElementById('sh-amount').value=Math.abs(tx.montant).toFixed(2);
+  // Bouton supprimer : seulement pour les entrées saisies par l'utilisateur
+  const isUser=tx.userAdded||false;
+  document.getElementById('sheet-delete-wrap').style.display=isUser?'block':'none';
   document.getElementById('sheet-wrap').style.display='block';
   setTimeout(()=>document.getElementById('sh-label').focus(),100);
+}
+function deleteEntry(){
+  if(!sheetId)return;
+  if(!confirm('Supprimer cette transaction ?'))return;
+  const numId=sheetId.startsWith('u')?parseInt(sheetId.slice(1)):null;
+  if(numId){
+    userExpenses=userExpenses.filter(e=>e.id!==numId);
+    doneSet.delete(sheetId);
+    delete overrides[sheetId];
+  }
+  closeSheet();refreshAll();saveState();
 }
 function closeSheet(){document.getElementById('sheet-wrap').style.display='none';sheetId=null;}
 function saveSheet(){
