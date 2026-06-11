@@ -169,6 +169,32 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
         <div class="solde-value pos" id="m-solde">—</div>
         <div class="solde-sub" id="m-solde-sub">—</div>
       </div>
+      <!-- GRAPHIQUE PROJECTION -->
+      <div style="background:var(--card);border-radius:20px;border:0.5px solid var(--border);padding:16px 16px 10px;margin-bottom:12px">
+        <div style="font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:12px">Projection du solde</div>
+        <div style="position:relative;height:130px;width:100%">
+          <canvas id="proj-chart" style="display:block"></canvas>
+        </div>
+      </div>
+
+      <!-- ÉPARGNE -->
+      <div style="background:var(--card);border-radius:16px;border:0.5px solid var(--border);padding:14px 16px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase">Épargne cumulée</div>
+          <div style="font-size:10px;color:var(--muted)" id="epargne-count">0 virement(s)</div>
+        </div>
+        <div style="font-size:32px;font-weight:700;letter-spacing:-1px;color:var(--green)" id="epargne-total">0,00 €</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px" id="epargne-sub">Aucun virement épargne saisi</div>
+        <div id="epargne-list" style="margin-top:10px;display:none"></div>
+        <!-- Graphique projection épargne -->
+        <div id="epargne-chart-wrap" style="margin-top:12px;display:none">
+          <div style="font-size:10px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">Projection de l'épargne</div>
+          <div style="position:relative;height:100px;width:100%">
+            <canvas id="epargne-chart" style="display:block"></canvas>
+          </div>
+        </div>
+      </div>
+
       <div class="cards-row">
         <div class="mini-card">
           <div class="mini-card-label"><span style="width:7px;height:7px;border-radius:50%;background:var(--mc);display:inline-block"></span>Mastercard</div>
@@ -254,6 +280,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
           <option value="2026-04">Avr 26</option><option value="2026-05">Mai 26</option>
           <option value="2026-06" selected>Juin 26</option><option value="2026-07">Juil 26</option>
           <option value="2026-08">Août 26</option>
+          <option value="2026-09">Sept 26</option>
+          <option value="2026-10">Oct 26</option>
+          <option value="2026-11">Nov 26</option>
+          <option value="2026-12">Déc 26</option>
+          <option value="2027-01">Jan 27</option>
+          <option value="2027-02">Fév 27</option>
+          <option value="2027-03">Mar 27</option>
         </select>
         <select id="filt-type" onchange="renderHisto()">
           <option value="">Tout</option><option value="recette">Recettes</option><option value="depense">Dépenses</option>
@@ -304,6 +337,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const SOLDE_SEED={date:'2026-06-10',solde:926.67};
 const REAL_TODAY=new Date().toISOString().slice(0,10);
@@ -315,7 +349,7 @@ const fmtDL=s=>{if(!s)return'—';return new Date(s+'T00:00:00').toLocaleDateStr
 const addDays=(s,n)=>{const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);};
 
 // Catégories
-const DEP_CATS=['Alimentation','Carburant','Enfants','Loisirs','Maison','Restaurant','Santé','Transport','Vêtements','Divers'];
+const DEP_CATS=['Alimentation','Carburant','Enfants','Épargne','Loisirs','Maison','Restaurant','Santé','Transport','Vêtements','Divers'];
 const REV_CATS=['Salaire','Prime','Remboursement','Autre'];
 
 const BASE_TX=[
@@ -355,6 +389,80 @@ const BASE_TX=[
   {id:'b53',date:'2026-08-12',label:'Crédit hypo',montant:-98.62,type:'fixed'},
   {id:'b54',date:'2026-08-14',label:'Crédit hypo',montant:-156.81,type:'fixed'},
   {id:'b55',date:'2026-08-14',label:'MASTER débit',montant:0,type:'card_debit',cardType:'MC'},
+  // Août suite
+  {id:'b56',date:'2026-08-20',label:'FM',montant:-31.2,type:'fixed'},
+  {id:'b57',date:'2026-08-24',label:'FM',montant:-31.2,type:'fixed'},
+  {id:'b58',date:'2026-08-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'b59',date:'2026-08-25',label:'Crédit hypo',montant:-194,type:'fixed'},
+  {id:'b60',date:'2026-08-30',label:'Remb parents',montant:-400,type:'fixed'},
+  // Septembre 2026
+  {id:'b61',date:'2026-09-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'b62',date:'2026-09-01',label:'Divers',montant:-920,type:'fixed'},
+  {id:'b63',date:'2026-09-01',label:'REMB VISA',montant:-500,type:'fixed'},
+  {id:'b64',date:'2026-09-03',label:'VENTE MAISON',montant:83000,type:'fixed'},
+  {id:'b65',date:'2026-09-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'b66',date:'2026-09-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'b67',date:'2026-09-12',label:'RENTRÉE SCOLAIRE',montant:-400,type:'fixed'},
+  {id:'b68',date:'2026-09-12',label:'Virement épargne',montant:-79500,type:'epargne'},
+  {id:'b69',date:'2026-09-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'b70',date:'2026-09-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Octobre 2026
+  {id:'b71',date:'2026-10-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'b72',date:'2026-10-12',label:'Virement épargne',montant:-500,type:'epargne'},
+  {id:'b73',date:'2026-10-25',label:'Salaire',montant:2490,type:'fixed'},
+  // Novembre 2026
+  {id:'b74',date:'2026-11-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'b75',date:'2026-11-12',label:'Virement épargne',montant:-500,type:'epargne'},
+  {id:'b76',date:'2026-11-25',label:'Salaire',montant:2490,type:'fixed'},
+  // Octobre 2026 (suite)
+  {id:'b80',date:'2026-10-01',label:'Divers',montant:-1000,type:'fixed'},
+  {id:'b81',date:'2026-10-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'b82',date:'2026-10-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'b83',date:'2026-10-12',label:'Virement épargne',montant:-500,type:'epargne'},
+  {id:'b84',date:'2026-10-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'b85',date:'2026-10-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Novembre 2026
+  {id:'b86',date:'2026-11-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'b87',date:'2026-11-01',label:'Divers',montant:-1000,type:'fixed'},
+  {id:'b88',date:'2026-11-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'b89',date:'2026-11-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'b90',date:'2026-11-12',label:'Virement épargne',montant:-500,type:'epargne'},
+  {id:'b91',date:'2026-11-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'b92',date:'2026-11-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Décembre 2026
+  {id:'b77',date:'2026-12-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'b93',date:'2026-12-01',label:'Divers',montant:-1000,type:'fixed'},
+  {id:'b94',date:'2026-12-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'b95',date:'2026-12-12',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'b78',date:'2026-12-12',label:'Virement épargne',montant:-392,type:'epargne'},
+  {id:'b96',date:'2026-12-14',label:'PRIME FA',montant:1309,type:'fixed'},
+  {id:'b79',date:'2026-12-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'b97',date:'2026-12-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Janvier 2027
+  {id:'c01',date:'2027-01-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'c02',date:'2027-01-01',label:'Divers',montant:-1000,type:'fixed'},
+  {id:'c03',date:'2027-01-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'c04',date:'2027-01-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'c05',date:'2027-01-12',label:'Virement épargne',montant:-500,type:'epargne'},
+  {id:'c06',date:'2027-01-24',label:'Récup impôts',montant:1120,type:'fixed'},
+  {id:'c07',date:'2027-01-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'c08',date:'2027-01-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Février 2027
+  {id:'c09',date:'2027-02-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'c10',date:'2027-02-01',label:'Divers',montant:-1000,type:'fixed'},
+  {id:'c11',date:'2027-02-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'c12',date:'2027-02-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'c13',date:'2027-02-12',label:'Virement épargne',montant:-500,type:'epargne'},
+  {id:'c14',date:'2027-02-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'c15',date:'2027-02-28',label:'Remb parents',montant:-300,type:'fixed'},
+  // Mars 2027
+  {id:'c16',date:'2027-03-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'c17',date:'2027-03-01',label:'Divers',montant:-1000,type:'fixed'},
+  {id:'c18',date:'2027-03-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'c19',date:'2027-03-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'c20',date:'2027-03-12',label:'Virement épargne',montant:-1350,type:'epargne'},
+  {id:'c21',date:'2027-03-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'c22',date:'2027-03-30',label:'Remb parents',montant:-300,type:'fixed'},
 ];
 
 let doneSet=new Set(['b20b']);
@@ -447,7 +555,7 @@ function computeSolde(){
 }
 function computeProj(){
   const cs=computeSolde();
-  const pending=getAllTx().filter(t=>!t.done&&t.date>=REAL_TODAY&&t.montant!==0&&t.date<='2026-08-31').sort((a,b)=>a.date.localeCompare(b.date));
+  const pending=getAllTx().filter(t=>!t.done&&t.date>=REAL_TODAY&&t.montant!==0&&t.date<='2027-03-31').sort((a,b)=>a.date.localeCompare(b.date));
   let bal=cs;const rows=[];
   pending.forEach(t=>{bal=Math.round((bal+t.montant)*100)/100;rows.push({...t,runBal:bal});});
   return{rows,currentSolde:cs};
@@ -674,7 +782,274 @@ function renderHisto(){
   }).join('');
 }
 
-function refreshAll(){renderHome();renderProj();renderHisto();}
+let projChartInstance=null;
+function renderChart(){
+  const{rows,currentSolde}=computeProj();
+  const canvas=document.getElementById('proj-chart');
+  if(!canvas)return;
+  // Build points: today + all pending
+  const points=[{date:REAL_TODAY,solde:currentSolde}];
+  rows.forEach(r=>points.push({date:r.date,solde:r.runBal}));
+  // Deduplicate dates (keep last per date)
+  const byDate={};
+  points.forEach(p=>byDate[p.date]=p.solde);
+  const dates=Object.keys(byDate).sort();
+  const values=dates.map(d=>byDate[d]);
+  const labels=dates.map(d=>fmtD(d));
+  const colors=values.map(v=>v<0?'rgba(255,92,92,0.9)':'rgba(46,204,138,0.9)');
+  const borderColors=values.map(v=>v<0?'#ff5c5c':'#2ecc8a');
+
+  if(projChartInstance)projChartInstance.destroy();
+  projChartInstance=new Chart(canvas,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        data:values,
+        borderColor:'#4a9eff',
+        borderWidth:2,
+        backgroundColor:(ctx)=>{
+          const g=ctx.chart.ctx.createLinearGradient(0,0,0,130);
+          g.addColorStop(0,'rgba(74,158,255,0.15)');
+          g.addColorStop(1,'rgba(74,158,255,0.01)');
+          return g;
+        },
+        fill:true,
+        tension:0.35,
+        pointRadius:values.map((v,i)=>{
+          if(i===0)return 4;
+          if(v<0)return 4;
+          return 2;
+        }),
+        pointBackgroundColor:values.map(v=>v<0?'#ff5c5c':'#4a9eff'),
+        pointBorderColor:'transparent',
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      animation:{duration:300},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#1e1e1e',
+          borderColor:'#3a3a3a',
+          borderWidth:1,
+          titleColor:'#888',
+          bodyColor:'#f0f0ee',
+          callbacks:{
+            label:ctx=>fmt(ctx.parsed.y)
+          }
+        }
+      },
+      scales:{
+        x:{
+          grid:{display:false},
+          ticks:{color:'#555',font:{size:9},maxRotation:0,autoSkip:true,maxTicksLimit:6}
+        },
+        y:{
+          grid:{color:'rgba(255,255,255,0.04)'},
+          ticks:{color:'#555',font:{size:9},callback:v=>{
+            if(Math.abs(v)>=1000)return(v/1000).toFixed(1)+'k';
+            return v+'';
+          }},
+          border:{dash:[3,3]}
+        }
+      }
+    }
+  });
+}
+
+let epargneChartInstance=null;
+
+function isEpargne(e){
+  // Pour les transactions de base (BASE_TX)
+  if(e.type==='epargne') return true;
+  // Pour les entrées utilisateur
+  return !e.isRevenue && (
+    e.cat==='Épargne' ||
+    e.label.toLowerCase().includes('épargne') ||
+    e.label.toLowerCase().includes('epargne') ||
+    e.label.toLowerCase().includes('virement épargne') ||
+    e.label.toLowerCase().includes('virement epargne')
+  );
+}
+
+function renderEpargne(){
+  // Inclure les virements de BASE_TX (type epargne) + les dépenses utilisateur catégorisées épargne
+  const baseTxEp=getAllTx().filter(t=>t.type==='epargne');
+  const userEp=userExpenses.filter(isEpargne).map(e=>({
+    ...e, id:'u'+e.id, date:e.debitDate||e.date, montant:e.montant,
+    done:doneSet.has('u'+e.id)
+  }));
+  const epItems=[...baseTxEp,...userEp].sort((a,b)=>a.date.localeCompare(b.date));
+
+  // Séparer passés/validés et futurs/prévus
+  // Pour BASE_TX: validé si dans doneSet avec leur id direct; pour user: 'u'+id
+  const done=epItems.filter(e=>e.done);
+  const pending=epItems.filter(e=>!e.done);
+
+  const totalDone=done.reduce((s,e)=>s+Math.abs(e.montant),0);
+  const totalPending=pending.reduce((s,e)=>s+Math.abs(e.montant),0);
+  const totalAll=totalDone+totalPending;
+
+  document.getElementById('epargne-total').textContent=fmt(totalDone);
+  document.getElementById('epargne-count').textContent=done.length+' virement'+(done.length!==1?'s':'');
+
+  const listEl=document.getElementById('epargne-list');
+  const chartWrap=document.getElementById('epargne-chart-wrap');
+
+  if(!epItems.length){
+    document.getElementById('epargne-sub').textContent='Ajouter via catégorie "Épargne"';
+    listEl.style.display='none';
+    chartWrap.style.display='none';
+    return;
+  }
+
+  document.getElementById('epargne-sub').textContent=
+    totalPending>0
+      ? `+ ${fmt(totalPending)} prévu → ${fmt(totalAll)} projeté`
+      : 'Ajouter via catégorie "Épargne"';
+
+  // Liste des 4 derniers validés
+  listEl.style.display='block';
+  const sorted=[...done].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,4);
+  const pendingSorted=[...pending].sort((a,b)=>a.date.localeCompare(b.date)).slice(0,3);
+
+  let listHtml='<div style="border-top:0.5px solid var(--border);padding-top:8px;display:flex;flex-direction:column;gap:6px">';
+  sorted.forEach(e=>{
+    listHtml+=`<div style="display:flex;justify-content:space-between;font-size:12px">
+      <span style="color:var(--muted)">${fmtD(e.debitDate||e.date)} · ${e.label}</span>
+      <span style="color:var(--green);font-weight:500">${fmt(Math.abs(e.montant))}</span>
+    </div>`;
+  });
+  if(done.length>4) listHtml+=`<div style="font-size:11px;color:var(--subtle);text-align:center">+ ${done.length-4} autre(s)</div>`;
+  if(pendingSorted.length){
+    listHtml+=`<div style="font-size:10px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-top:4px;margin-bottom:2px">À venir</div>`;
+    pendingSorted.forEach(e=>{
+      listHtml+=`<div style="display:flex;justify-content:space-between;font-size:12px">
+        <span style="color:var(--subtle)">${fmtD(e.debitDate||e.date)} · ${e.label}</span>
+        <span style="color:var(--subtle);font-weight:500">${fmt(Math.abs(e.montant))}</span>
+      </div>`;
+    });
+    if(pending.length>3) listHtml+=`<div style="font-size:11px;color:var(--subtle);text-align:center">+ ${pending.length-3} prévu(s)</div>`;
+  }
+  listHtml+='</div>';
+  listEl.innerHTML=listHtml;
+
+  // Graphique projection épargne
+  if(epItems.length>0){
+    chartWrap.style.display='block';
+    renderEpargneChart(done, pending);
+  } else {
+    chartWrap.style.display='none';
+  }
+}
+
+function renderEpargneChart(done, pending){
+  const canvas=document.getElementById('epargne-chart');
+  if(!canvas)return;
+
+  // Construire la courbe : points validés (solde cumulatif réel) + prévus (pointillé)
+  const allSorted=[...done].sort((a,b)=>(a.debitDate||a.date).localeCompare(b.debitDate||b.date));
+  const pendSorted=[...pending].sort((a,b)=>(a.debitDate||a.date).localeCompare(b.debitDate||b.date));
+
+  // Points réels
+  let cum=0;
+  const realPoints=[{date:REAL_TODAY,val:0,label:'Auj.'}];
+  allSorted.forEach(e=>{
+    cum+=Math.abs(e.montant);
+    realPoints.push({date:e.debitDate||e.date,val:cum,label:fmtD(e.debitDate||e.date)});
+  });
+  // Si aucun virement validé, partir de 0
+  const realLabels=realPoints.map(p=>p.label);
+  const realVals=realPoints.map(p=>p.val);
+
+  // Points prévus (continuation depuis le dernier réel)
+  let cumPrev=cum;
+  const prevPoints=[{date:realPoints[realPoints.length-1].date,val:cum,label:realPoints[realPoints.length-1].label}];
+  pendSorted.forEach(e=>{
+    cumPrev+=Math.abs(e.montant);
+    prevPoints.push({date:e.debitDate||e.date,val:cumPrev,label:fmtD(e.debitDate||e.date)});
+  });
+
+  // Merge labels
+  const allLabels=[...new Set([...realLabels,...prevPoints.map(p=>p.label)])];
+  const realData=allLabels.map(l=>{const p=realPoints.find(x=>x.label===l);return p?p.val:null;});
+  const prevData=allLabels.map(l=>{const p=prevPoints.find(x=>x.label===l);return p?p.val:null;});
+
+  if(epargneChartInstance)epargneChartInstance.destroy();
+  epargneChartInstance=new Chart(canvas,{
+    type:'line',
+    data:{
+      labels:allLabels,
+      datasets:[
+        {
+          label:'Épargne validée',
+          data:realData,
+          borderColor:'#2ecc8a',
+          borderWidth:2,
+          backgroundColor:(ctx)=>{
+            const g=ctx.chart.ctx.createLinearGradient(0,0,0,100);
+            g.addColorStop(0,'rgba(46,204,138,0.18)');
+            g.addColorStop(1,'rgba(46,204,138,0.01)');
+            return g;
+          },
+          fill:true,
+          tension:0.35,
+          pointRadius:3,
+          pointBackgroundColor:'#2ecc8a',
+          pointBorderColor:'transparent',
+          spanGaps:false,
+        },
+        {
+          label:'Projection',
+          data:prevData,
+          borderColor:'#2ecc8a',
+          borderWidth:2,
+          borderDash:[5,4],
+          backgroundColor:'transparent',
+          fill:false,
+          tension:0.35,
+          pointRadius:prevData.map(v=>v!==null?3:0),
+          pointBackgroundColor:'rgba(46,204,138,0.4)',
+          pointBorderColor:'transparent',
+          spanGaps:false,
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      animation:{duration:300},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#1e1e1e',
+          borderColor:'#3a3a3a',
+          borderWidth:1,
+          titleColor:'#888',
+          bodyColor:'#f0f0ee',
+          callbacks:{label:ctx=>fmt(ctx.parsed.y)}
+        }
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#555',font:{size:9},maxRotation:0,autoSkip:true,maxTicksLimit:6}},
+        y:{
+          grid:{color:'rgba(255,255,255,0.04)'},
+          ticks:{color:'#555',font:{size:9},callback:v=>{
+            if(v>=1000)return(v/1000).toFixed(1)+'k€';
+            return v+'€';
+          }},
+          border:{dash:[3,3]},
+          min:0
+        }
+      }
+    }
+  });
+}
+
+function refreshAll(){renderHome();renderProj();renderHisto();renderChart();renderEpargne();}
 function showTab(name,btn){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
