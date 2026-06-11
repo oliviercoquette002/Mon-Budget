@@ -432,16 +432,11 @@ const BASE_TX=[
   {id:'b80',date:'2026-10-01',label:'Divers',montant:-1000,type:'daily'},
   {id:'b81',date:'2026-10-09',label:'Salaire',montant:990,type:'fixed'},
   {id:'b82',date:'2026-10-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
-  {id:'b83',date:'2026-10-12',label:'Virement épargne',montant:-500,type:'epargne'},
-  {id:'b84',date:'2026-10-25',label:'Salaire',montant:2490,type:'fixed'},
   {id:'b85',date:'2026-10-30',label:'Remb parents',montant:-300,type:'fixed'},
   // Novembre 2026
-  {id:'b86',date:'2026-11-01',label:'Orange',montant:-4.5,type:'fixed'},
   {id:'b87',date:'2026-11-01',label:'Divers',montant:-1000,type:'daily'},
   {id:'b88',date:'2026-11-09',label:'Salaire',montant:990,type:'fixed'},
   {id:'b89',date:'2026-11-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
-  {id:'b90',date:'2026-11-12',label:'Virement épargne',montant:-500,type:'epargne'},
-  {id:'b91',date:'2026-11-25',label:'Salaire',montant:2490,type:'fixed'},
   {id:'b92',date:'2026-11-30',label:'Remb parents',montant:-300,type:'fixed'},
   // Décembre 2026
   {id:'b77',date:'2026-12-01',label:'Orange',montant:-4.5,type:'fixed'},
@@ -883,10 +878,22 @@ function renderChart(){
         y:{
           grid:{color:'rgba(255,255,255,0.04)'},
           ticks:{color:'#555',font:{size:9},callback:v=>{
-            if(Math.abs(v)>=1000)return(v/1000).toFixed(1)+'k';
-            return v+'';
+            if(Math.abs(v)>=1000)return(v/1000).toFixed(1)+'k€';
+            return v+'€';
           }},
-          border:{dash:[3,3]}
+          border:{dash:[3,3]},
+          // Limiter l'échelle pour ne pas être écrasé par le pic vente maison
+          // On calcule le max/min sans les valeurs extrêmes (>20000)
+          afterDataLimits(scale){
+            const vals = scale.chart.data.datasets[0].data.filter(v=>v!==null&&Math.abs(v)<20000);
+            if(vals.length){
+              const mn = Math.min(...vals);
+              const mx = Math.max(...vals);
+              const pad = (mx-mn)*0.15||500;
+              scale.min = mn - pad;
+              scale.max = mx + pad;
+            }
+          }
         }
       }
     }
