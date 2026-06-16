@@ -232,8 +232,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
     <div class="section" id="s-add">
       <!-- Toggle dépense / recette -->
       <div class="type-toggle">
-        <button class="type-btn active-dep" id="btn-dep" onclick="setType('dep')">— Dépense</button>
-        <button class="type-btn" id="btn-rev" onclick="setType('rev')">+ Rentrée</button>
+        <button type="button" class="type-btn active-dep" id="btn-dep" onclick="setType('dep')">— Dépense</button>
+        <button type="button" class="type-btn" id="btn-rev" onclick="setType('rev')">+ Rentrée</button>
       </div>
 
       <div class="f-card">
@@ -256,9 +256,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
         <div id="moyen-block">
           <label class="f-label">Moyen de paiement</label>
           <div class="seg" id="seg-moyen">
-            <button class="seg-btn active" data-val="CC">Compte</button>
-            <button class="seg-btn" data-val="MC">Mastercard</button>
-            <button class="seg-btn" data-val="VISA">VISA</button>
+            <button type="button" class="seg-btn active" data-val="CC">Compte</button>
+            <button type="button" class="seg-btn" data-val="MC">Mastercard</button>
+            <button type="button" class="seg-btn" data-val="VISA">VISA</button>
           </div>
         </div>
 
@@ -270,13 +270,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
           <div class="debit-hint" id="debit-hint">Sélectionne une date pour voir la date de débit.</div>
         </div>
 
-        <button class="btn-primary dep" id="btn-submit" onclick="addEntry()">Ajouter la dépense</button>
+        <button type="button" class="btn-primary dep" id="btn-submit" onclick="addEntry()">Ajouter la dépense</button>
       </div>
 
       <div class="f-card">
         <div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--text)">Données sauvegardées</div>
         <div class="storage-info" id="storage-info">—</div>
-        <button class="btn-danger" onclick="confirmReset()">Réinitialiser toutes les données</button>
+        <button type="button" class="btn-danger" onclick="confirmReset()">Réinitialiser toutes les données</button>
       </div>
     </div>
 
@@ -309,6 +309,18 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
       </div>
       <div class="list-card"><div id="histo-list"></div></div>
     </div>
+    <!-- CARTES -->
+    <div class="section" id="s-cartes">
+      <div class="section-title" style="padding:0 2px">Mastercard</div>
+      <div class="list-card" id="cartes-mc-list">
+        <div style="padding:14px;font-size:13px;color:var(--muted)">Aucune dépense MC saisie.</div>
+      </div>
+      <div class="section-title" style="padding:0 2px">VISA</div>
+      <div class="list-card" id="cartes-visa-list">
+        <div style="padding:14px;font-size:13px;color:var(--muted)">Aucune dépense VISA saisie.</div>
+      </div>
+    </div>
+
   </div>
 
   <div id="tabs">
@@ -328,6 +340,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
       Historique<div class="tab-dot"></div>
     </button>
+    <button class="tab-btn" onclick="showTab('cartes',this)">
+      <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      Cartes<div class="tab-dot"></div>
+    </button>
   </div>
 </div>
 
@@ -341,12 +357,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
     <div class="f-group"><label class="f-label">Date</label><input class="f-input" type="date" id="sh-date"></div>
     <div class="f-group"><label class="f-label">Montant (€)</label><input class="f-input" type="number" id="sh-amount" step="0.01" min="0.01" inputmode="decimal"></div>
     <div class="sheet-btns">
-      <button class="sbtn reset" onclick="resetSheet()">↩</button>
-      <button class="sbtn cancel" onclick="closeSheet()">Annuler</button>
-      <button class="sbtn save" onclick="saveSheet()">Enregistrer</button>
+      <button type="button" class="sbtn reset" onclick="resetSheet()">↩</button>
+      <button type="button" class="sbtn cancel" onclick="closeSheet()">Annuler</button>
+      <button type="button" class="sbtn save" onclick="saveSheet()">Enregistrer</button>
     </div>
     <div id="sheet-delete-wrap" style="display:none;margin-top:10px">
-      <button class="sbtn" style="width:100%;background:var(--red-bg);color:var(--red);border:0.5px solid rgba(255,92,92,.3)" onclick="deleteEntry()">🗑 Supprimer cette transaction</button>
+      <button type="button" class="sbtn" style="width:100%;background:var(--red-bg);color:var(--red);border:0.5px solid rgba(255,92,92,.3)" onclick="deleteEntry()">🗑 Supprimer cette transaction</button>
     </div>
   </div>
 </div>
@@ -390,19 +406,19 @@ const BASE_TX=[
   {id:'b40',date:'2026-07-11',label:'Crédit hypo',montant:-517.52,type:'fixed'},
   {id:'b41',date:'2026-07-12',label:'Crédit hypo',montant:-98.62,type:'fixed'},
   {id:'b42',date:'2026-07-14',label:'Crédit hypo',montant:-156.81,type:'fixed'},
-  {id:'b43',date:'2026-07-14',label:'MASTER débit',montant:-500,type:'card_debit',cardType:'MC'},
+  {id:'b43',date:'2026-07-14',label:'MASTER débit',montant:0,type:'card_debit',cardType:'MC'},
   {id:'b44',date:'2026-07-25',label:'Salaire',montant:2490,type:'fixed'},
   {id:'b45',date:'2026-07-25',label:'Crédit hypo',montant:-194,type:'fixed'},
   {id:'b46',date:'2026-07-30',label:'Remb parents',montant:-400,type:'fixed'},
   {id:'b47',date:'2026-08-01',label:'Orange',montant:-4.5,type:'fixed'},
   {id:'b48',date:'2026-08-01',label:'Eau',montant:-25,type:'fixed'},
-  {id:'b49',date:'2026-08-01',label:'VISA débit',montant:-500,type:'card_debit',cardType:'VISA'},
+  {id:'b49',date:'2026-08-01',label:'VISA débit',montant:0,type:'card_debit',cardType:'VISA'},
   {id:'b50',date:'2026-08-09',label:'Salaire',montant:990,type:'fixed'},
   {id:'b51',date:'2026-08-11',label:'Crédit hypo',montant:-483.36,type:'fixed'},
   {id:'b52',date:'2026-08-11',label:'Crédit hypo',montant:-517.52,type:'fixed'},
   {id:'b53',date:'2026-08-12',label:'Crédit hypo',montant:-98.62,type:'fixed'},
   {id:'b54',date:'2026-08-14',label:'Crédit hypo',montant:-156.81,type:'fixed'},
-  {id:'b55',date:'2026-08-14',label:'MASTER débit',montant:-500,type:'card_debit',cardType:'MC'},
+  {id:'b55',date:'2026-08-14',label:'MASTER débit',montant:0,type:'card_debit',cardType:'MC'},
   // Août suite
   {id:'b56',date:'2026-08-20',label:'FM',montant:-31.2,type:'fixed'},
   {id:'b57',date:'2026-08-24',label:'FM',montant:-31.2,type:'fixed'},
@@ -511,7 +527,7 @@ function updateStorageInfo(){
   }catch(e){}
 }
 function confirmReset(){
-  if(confirm('Supprimer toutes les données ? Cette action est irréversible.')){
+  {
     localStorage.removeItem(SK);
     doneSet=new Set(['b20b']);userExpenses=[];overrides={};
     refreshAll();updateStorageInfo();
@@ -526,6 +542,19 @@ function getDebitDate(m,ds){
   if(m==='VISA'){if(day<=23){const nm=mo===11?0:mo+1,ny=mo===11?y+1:y;return`${ny}-${String(nm+1).padStart(2,'0')}-01`;}const nm=mo>=10?0:mo+2,ny=mo>=10?y+1:y;return`${ny}-${String(nm+1).padStart(2,'0')}-01`;}
   return ds;
 }
+function getCardCycleInfo(ct, dd){
+  const userTotal = userExpenses
+    .filter(e => e.moyen===ct && e.debitDate===dd && e.montant<0)
+    .reduce((s,e) => s+Math.abs(e.montant), 0);
+  const LIMIT = 500;
+  return {
+    userTotal,
+    remaining: Math.max(0, LIMIT-userTotal),
+    over: Math.max(0, userTotal-LIMIT),
+    isOver: userTotal > LIMIT
+  };
+}
+
 function getNextCycle(ct){
   const d=new Date(REAL_TODAY+'T00:00:00'),day=d.getDate(),m=d.getMonth(),y=d.getFullYear();
   if(ct==='MC'){if(day<=7)return{cd:`${y}-${String(m+1).padStart(2,'0')}-07`,dd:`${y}-${String(m+1).padStart(2,'0')}-14`};const nm=m===11?0:m+1,ny=m===11?y+1:y;return{cd:`${ny}-${String(nm+1).padStart(2,'0')}-07`,dd:`${ny}-${String(nm+1).padStart(2,'0')}-14`};}
@@ -535,28 +564,32 @@ function getNextCycle(ct){
   return{cd:`${ny}-${String(nm+1).padStart(2,'0')}-23`,dd:`${ny2}-${String(nm2+1).padStart(2,'0')}-01`};
 }
 function getCardDebit(ct,dd){
-  // Débits déjà engagés — montants fixes
-  if(ct==='MC'&&dd==='2026-06-14')return -551.82;
-  if(ct==='VISA'&&dd==='2026-07-01')return -1125.29;
+  // Débits engagés fixes
+  if(ct==='MC'&&dd==='2026-06-14') return -551.82;
+  if(ct==='VISA'&&dd==='2026-07-01') return -1125.29;
 
-  // Cycles couverts par l'estimation de 500€ (jusqu'à fin août)
-  const estimatedCycles = {
-    'MC': ['2026-07-14','2026-08-14'],
-    'VISA': ['2026-08-01']
-  };
-  const isEstimated = (estimatedCycles[ct]||[]).includes(dd);
+  // Cycles estimés (jusqu'à fin août)
+  const estimated = {MC:['2026-07-14','2026-08-14'],VISA:['2026-08-01']};
+  const isEst = (estimated[ct]||[]).includes(dd);
 
-  // Somme des dépenses utilisateur saisies pour ce cycle
+  // Total des dépenses utilisateur saisies pour ce cycle
+  // On relit debitDate depuis userExpenses (pas les overrides de date)
   const userTotal = userExpenses
     .filter(e => e.moyen===ct && e.debitDate===dd && e.montant<0)
     .reduce((s,e) => s+Math.abs(e.montant), 0);
 
-  if(isEstimated){
-    // Si des dépenses ont été saisies → on utilise le VRAI montant saisi
-    // Si rien de saisi → on garde l'estimation de 500€ (prudence)
-    return userTotal > 0 ? -userTotal : -500;
+  if(isEst){
+    const debitD = new Date(dd+'T00:00:00');
+    const todayD = new Date(REAL_TODAY+'T00:00:00');
+    const daysLeft = Math.round((debitD-todayD)/(1000*60*60*24));
+    if(daysLeft > 7){
+      // Avant J-7 : max(500, userTotal) pour montrer dépassement
+      return -(Math.max(500, userTotal));
+    } else {
+      // J-7 à J0 : vrai montant ou 0
+      return userTotal > 0 ? -userTotal : 0;
+    }
   }
-
   return userTotal > 0 ? -userTotal : 0;
 }
 function applyOv(t){
@@ -569,21 +602,32 @@ function getAllTx(){
     if(t.type==='card_debit'&&m===0)m=getCardDebit(t.cardType,t.date);
     return applyOv({...t,montant:m,done:doneSet.has(t.id)});
   }).filter(t=>t.montant!==0);
-  // Dépenses CC et rentrées utilisateur
-  const extra=userExpenses.filter(e=>e.moyen==='CC'||e.isRevenue).map(e=>applyOv({
+  // Toutes les dépenses utilisateur (CC, MC, VISA, rentrées)
+  const extra=userExpenses.map(e=>applyOv({
     id:'u'+e.id,date:e.debitDate||e.date,label:e.label,montant:e.montant,
-    done:doneSet.has('u'+e.id),type:'user',userAdded:true,isRevenue:e.isRevenue,cat:e.cat
+    done:doneSet.has('u'+e.id),type:'user',userAdded:true,isRevenue:e.isRevenue||false,
+    cat:e.cat,moyen:e.moyen
   }));
   return[...all,...extra].sort((a,b)=>a.date.localeCompare(b.date)||a.id.localeCompare(b.id));
 }
 function computeSolde(){
+  // Solde réel = uniquement les TX validées manuellement
   let s=SOLDE_SEED.solde;
-  getAllTx().filter(t=>t.done).sort((a,b)=>a.date.localeCompare(b.date)).forEach(t=>{s=Math.round((s+t.montant)*100)/100;});
+  getAllTx()
+    .filter(t=>t.done)
+    .sort((a,b)=>a.date.localeCompare(b.date))
+    .forEach(t=>{s=Math.round((s+t.montant)*100)/100;});
   return s;
 }
 function computeProj(){
+  // Solde de départ = uniquement TX validées
   const cs=computeSolde();
-  const pending=getAllTx().filter(t=>!t.done&&t.date>=REAL_TODAY&&t.montant!==0&&t.date<='2027-03-31').sort((a,b)=>a.date.localeCompare(b.date));
+  // Projection = TOUTES les TX non validées, passées ou futures
+  // Une TX du 11/06 non validée reste visible et compte dans la projection
+  const pending=getAllTx()
+    .filter(t=>!t.done&&t.montant!==0&&t.date<='2027-03-31'
+      &&!(t.userAdded&&(t.moyen==='MC'||t.moyen==='VISA')))
+    .sort((a,b)=>a.date.localeCompare(b.date));
   let bal=cs;const rows=[];
   pending.forEach(t=>{bal=Math.round((bal+t.montant)*100)/100;rows.push({...t,runBal:bal});});
   return{rows,currentSolde:cs};
@@ -645,7 +689,7 @@ function addEntry(){
   const label=document.getElementById('f-label').value.trim();
   const amount=parseFloat(document.getElementById('f-amount').value);
   const ds=document.getElementById('f-date').value;
-  if(!label||isNaN(amount)||amount<=0||!ds){alert('Remplis tous les champs.');return;}
+  if(!label||isNaN(amount)||amount<=0||!ds){console.warn('Champs manquants');return;}
 
   if(selType==='dep'){
     userExpenses.push({
@@ -685,7 +729,7 @@ function openSheet(id){
 }
 function deleteEntry(){
   if(!sheetId)return;
-  if(!confirm('Supprimer cette transaction ?'))return;
+  
   const numId=sheetId.startsWith('u')?parseInt(sheetId.slice(1)):null;
   if(numId){
     userExpenses=userExpenses.filter(e=>e.id!==numId);
@@ -701,9 +745,25 @@ function saveSheet(){
   const lbl=document.getElementById('sh-label').value.trim();
   const dt=document.getElementById('sh-date').value;
   const amt=parseFloat(document.getElementById('sh-amount').value);
-  if(!lbl||!dt||isNaN(amt)||amt<=0){alert('Tous les champs sont requis.');return;}
+  if(!lbl||!dt||isNaN(amt)||amt<=0){console.warn('Champs manquants');return;}
   if(!overrides[sheetId])overrides[sheetId]={};
-  overrides[sheetId].label=lbl;overrides[sheetId].date=dt;overrides[sheetId].montant=(tx.montant<0?-1:1)*amt;
+  overrides[sheetId].label=lbl;
+  overrides[sheetId].date=dt;
+  overrides[sheetId].montant=(tx.montant<0?-1:1)*amt;
+  // Si c'est une dépense utilisateur carte, mettre à jour debitDate dans userExpenses
+  if(tx.userAdded){
+    const numId=sheetId.startsWith('u')?parseInt(sheetId.slice(1)):null;
+    if(numId){
+      const exp=userExpenses.find(e=>e.id===numId);
+      if(exp&&(exp.moyen==='MC'||exp.moyen==='VISA')){
+        exp.date=dt;
+        exp.debitDate=getDebitDate(exp.moyen,dt);
+        exp.montant=(exp.montant<0?-1:1)*amt;
+      } else if(exp){
+        exp.date=dt;exp.debitDate=dt;exp.montant=(exp.montant<0?-1:1)*amt;
+      }
+    }
+  }
   closeSheet();refreshAll();saveState();
 }
 function resetSheet(){if(!sheetId)return;delete overrides[sheetId];closeSheet();refreshAll();saveState();}
@@ -770,10 +830,27 @@ function renderProj(){
   el.innerHTML=rows.map(r=>{
     const mod=overrides[r.id]?`<span class="badge b-mod">mod.</span>`:'';
     const badge=r.engaged?`<span class="badge b-eng">EC</span>`:r.isRevenue?`<span class="badge b-in">↑</span>`:'';
+    // Pour les card_debit estimés : montant en rouge si dépassement
+    let amountStyle = r.montant<0?'color:var(--red)':'color:var(--green)';
+    let amountExtra = '';
+    if(r.type==='card_debit' && r.cardType && !r.engaged){
+      const info = getCardCycleInfo(r.cardType, r.date);
+      const daysUntil = Math.round((new Date(r.date+'T00:00:00')-new Date(REAL_TODAY+'T00:00:00'))/(1000*60*60*24));
+      if(daysUntil > 7){
+        if(info.isOver){
+          amountStyle = 'color:var(--red);font-weight:700';
+        } else if(info.userTotal > 0){
+          amountExtra = `<span style="font-size:10px;color:var(--muted);display:block;text-align:right">${fmt(-info.userTotal)} engagé</span>`;
+        }
+      }
+    }
     return`<div class="prow ${r.runBal<0?'warn':''}" ontouchstart="startLP('${r.id}')" ontouchend="cancelLP()" ontouchmove="cancelLP()">
       <span class="prow-date">${fmtD(r.date)}</span>
       <span class="prow-label">${r.label}${badge}${mod}</span>
-      <span class="prow-amount ${r.montant<0?'red':'green'}">${fmt(r.montant)}</span>
+      <div style="text-align:right;flex-shrink:0;min-width:76px">
+        <span class="prow-amount" style="${amountStyle}">${fmt(r.montant)}</span>
+        ${amountExtra}
+      </div>
       <span class="prow-bal ${r.runBal<0?'red':''}">${fmt(r.runBal)}</span>
     </div>`;
   }).join('');
@@ -788,6 +865,7 @@ function renderHisto(){
     if(type==='recette'&&t.montant<=0)return false;
     if(type==='depense'&&t.montant>=0)return false;
     if(search&&!t.label.toLowerCase().includes(search))return false;
+    if(t.userAdded&&(t.moyen==='MC'||t.moyen==='VISA'))return false;
     return true;
   }).sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id));
   let rb=SOLDE_SEED.solde;const sm={};
@@ -798,11 +876,26 @@ function renderHisto(){
     const st=t.done?`<span class="badge b-ok">OK</span>`:t.engaged?`<span class="badge b-eng">EC</span>`:t.isRevenue?`<span class="badge b-in">↑</span>`:`<span class="badge b-pend">Prévu</span>`;
     const mod=overrides[t.id]?`<span class="badge b-mod">mod.</span>`:'';
     const vbtn=t.done?`<button class="action-btn" onclick="unvalidate('${t.id}')">↩</button>`:`<button class="action-btn" style="color:var(--green)" onclick="validate('${t.id}')">✓</button>`;
+    // Card_debit : montant en rouge si dépassement des 500€
+    let cardAmountStyle = t.montant<0?'color:var(--red)':'color:var(--green)';
+    let cardAmountExtra = '';
+    if(t.type==='card_debit' && t.cardType && !t.done && !t.engaged){
+      const info = getCardCycleInfo(t.cardType, t.date);
+      const daysUntil = Math.round((new Date(t.date+'T00:00:00')-new Date(REAL_TODAY+'T00:00:00'))/(1000*60*60*24));
+      if(daysUntil > 7){
+        if(info.isOver){
+          cardAmountStyle = 'color:var(--red);font-weight:700';
+        } else if(info.userTotal > 0){
+          cardAmountExtra = `<span style="font-size:10px;color:var(--muted);display:block">${fmt(-info.userTotal)} engagé</span>`;
+        }
+      }
+    }
     return`<div class="hrow ${t.done?'done':''}">
       <div class="hrow-meta"><span class="hrow-date">${fmtDL(t.date)}</span>${st}</div>
       <span class="hrow-label">${t.label}${mod}</span>
       <div class="hrow-right">
-        <span class="hrow-amount ${t.montant<0?'red':'green'}">${fmt(t.montant)}</span>
+        <span class="hrow-amount" style="${cardAmountStyle}">${fmt(t.montant)}</span>
+        ${cardAmountExtra}
         <span class="hrow-solde">${fmt(sm[t.id])}</span>
       </div>
       <div class="hrow-actions"><button class="edit-btn" onclick="openSheet('${t.id}')">✏</button>${vbtn}</div>
@@ -1090,86 +1183,90 @@ function renderEpargneChart(done, pending){
 }
 
 function renderBudgetJour(){
-  // Calcul du budget journalier SOUTENABLE sur toute la projection
-  // = le montant max qu'on peut dépenser chaque jour sans jamais tomber en négatif
-  // Si on ne dépense pas un jour, ça s'accumule pour les suivants
+  const END_DATE = '2027-03-25';
+  const msPerDay = 1000*60*60*24;
 
-  const solde = computeSolde();
-  const END_DATE = '2027-03-25'; // fin de projection
+  // 1. Déterminer SIM_START : aujourd'hui ou prochaine rentrée > 500€
+  // On utilise TOUTES les TX pour déterminer le solde (validées ou non)
+  // pour que valider une TX ne change pas le résultat
+  let tempSolde = SOLDE_SEED.solde;
+  getAllTx()
+    .filter(t => t.date <= REAL_TODAY && t.montant !== 0
+      && t.type !== 'epargne' && t.type !== 'card_debit' && t.type !== 'daily'
+      && !(t.userAdded && (t.moyen==='MC'||t.moyen==='VISA')))
+    .sort((a,b) => a.date.localeCompare(b.date))
+    .forEach(t => { tempSolde = Math.round((tempSolde+t.montant)*100)/100; });
 
-  // SIM_START dynamique : aujourd'hui si solde positif,
-  // sinon la date de la prochaine rentrée qui remet le solde >= 0
-  let simStartSolde = computeSolde();
   let SIM_START = REAL_TODAY;
-
-  // Si le solde actuel est négatif ou qu'on anticipe un creux,
-  // avancer jusqu'à la prochaine rentrée significative (> 500€)
-  if(simStartSolde < 0){
+  if(tempSolde < 0){
     const nextIncome = getAllTx().find(t =>
       !t.done && t.date >= REAL_TODAY && t.montant > 500
     );
     if(nextIncome) SIM_START = nextIncome.date;
   }
 
-  // Appliquer toutes les TX fixes entre aujourd'hui et SIM_START inclus
-  getAllTx().filter(t =>
-    !t.done && t.date >= REAL_TODAY && t.date <= SIM_START && t.montant !== 0
-    && t.type !== 'epargne' && t.type !== 'card_debit' && t.type !== 'daily'
-  ).sort((a,b) => a.date.localeCompare(b.date))
-  .forEach(t => { simStartSolde = Math.round((simStartSolde + t.montant)*100)/100; });
+  // 2. simStartSolde = SOLDE_SEED + TOUTES les TX jusqu'à SIM_START
+  // (validées ou non) → stable quelle que soit la validation
+  let simStartSolde = SOLDE_SEED.solde;
+  getAllTx()
+    .filter(t => t.date <= SIM_START && t.montant !== 0
+      && t.type !== 'epargne' && t.type !== 'card_debit' && t.type !== 'daily'
+      && !(t.userAdded && (t.moyen==='MC'||t.moyen==='VISA')))
+    .sort((a,b) => a.date.localeCompare(b.date))
+    .forEach(t => { simStartSolde = Math.round((simStartSolde+t.montant)*100)/100; });
 
-  // Tous les mouvements fixes à venir depuis le 19/06 (non validés, non épargne, non card_debit)
-  const pending = getAllTx().filter(t =>
-    !t.done && t.date > SIM_START && t.date <= END_DATE && t.montant !== 0
-    && t.type !== 'epargne' && t.type !== 'card_debit' && t.type !== 'daily'
-  ).sort((a,b) => a.date.localeCompare(b.date));
-
-  const msPerDay = 1000*60*60*24;
-  const endD = new Date(END_DATE+'T00:00:00');
-  const startD = new Date(SIM_START+'T00:00:00');
-  const totalDays = Math.max(1, Math.round((endD - startD) / msPerDay));
-
-  // Trouver le budget/jour max soutenable par dichotomie
-  // Le solde peut être temporairement négatif si une rentrée arrive le même jour ou le lendemain
-  // On autorise un découvert de 1 jour (charges débitées avant rentrée)
-  function simulate(dailyBudget){
-    let bal = simStartSolde;
-    let txIdx = 0;
-    const txList = [...pending];
-    for(let d=0; d<totalDays; d++){
-      const dateStr = addDays(SIM_START, d);
-      // Appliquer les TX du jour
-      while(txIdx < txList.length && txList[txIdx].date === dateStr){
-        bal = Math.round((bal + txList[txIdx].montant)*100)/100;
-        txIdx++;
+  // 3. Pending = TX fixes après SIM_START (validées ou non)
+  // même logique : stable quelle que soit la validation
+  // Pour la simulation, utiliser le VRAI montant saisi sur les cartes
+  // (pas l'estimation de -500€) pour refléter les vraies dépenses
+  const pending = getAllTx()
+    .filter(t => t.date > SIM_START && t.date <= END_DATE && t.montant !== 0
+      && t.type !== 'epargne' && t.type !== 'daily'
+      && !(t.userAdded && (t.moyen==='MC'||t.moyen==='VISA')))
+    .map(t => {
+      // Pour les card_debit estimés : utiliser le vrai montant saisi (pas -500)
+      if(t.type === 'card_debit' && !t.engaged){
+        const userTotal = userExpenses
+          .filter(e => e.moyen===t.cardType && e.debitDate===t.date && e.montant<0)
+          .reduce((s,e) => s+Math.abs(e.montant), 0);
+        return {...t, montant: userTotal > 0 ? -userTotal : 0};
       }
-      // Déduire le budget journalier
-      bal = Math.round((bal - dailyBudget)*100)/100;
-      // Tolérance découvert : -500€ max
+      return t;
+    })
+    .filter(t => t.montant !== 0)
+    .sort((a,b) => a.date.localeCompare(b.date));
+
+  const totalDays = Math.max(1, Math.round(
+    (new Date(END_DATE+'T00:00:00') - new Date(SIM_START+'T00:00:00')) / msPerDay
+  ));
+
+  // 4. Dichotomie
+  function simulate(daily){
+    let bal = simStartSolde;
+    let ti = 0;
+    for(let d=0; d<totalDays; d++){
+      const ds = addDays(SIM_START, d);
+      while(ti < pending.length && pending[ti].date === ds){
+        bal = Math.round((bal + pending[ti].montant)*100)/100;
+        ti++;
+      }
+      bal = Math.round((bal - daily)*100)/100;
       if(bal < -500) return false;
     }
     return true;
   }
 
-  // Dichotomie entre 0 et 200 €/jour
-  let lo = 0, hi = 200, best = 0;
-  for(let i=0; i<20; i++){
-    const mid = (lo+hi)/2;
-    if(simulate(mid)){ best=mid; lo=mid; }
-    else hi=mid;
+  let lo=0, hi=300, best=0;
+  for(let i=0; i<30; i++){
+    const mid=(lo+hi)/2;
+    if(simulate(mid)){best=mid;lo=mid;}else hi=mid;
   }
-  best = Math.floor(best * 100) / 100; // arrondi bas au centime
+  best = Math.floor(best*100)/100;
 
-  // Calcul du "pot disponible aujourd'hui" = solde après charges fixes imminentes (7j)
-  const horizon7 = addDays(REAL_TODAY, 7);
-  const charges7 = getAllTx().filter(t =>
-    !t.done && t.date >= REAL_TODAY && t.date <= horizon7 && t.montant < 0 && t.type !== 'epargne'
-  ).reduce((s,t) => s+Math.abs(t.montant), 0);
-  const potLibre = Math.max(0, solde - charges7);
 
-  // Cagnotte accumulée : si budget/jour * jours écoulés depuis début du mois > dépenses réelles extras
-  // On approxime : pot libre / budget/jour = jours de liberté
-  const joursLiberte = best > 0 ? Math.floor(potLibre / best) : 0;
+  const potLibre = Math.max(0, computeSolde() -
+    getAllTx().filter(t=>!t.done&&t.date>=REAL_TODAY&&t.date<=addDays(REAL_TODAY,7)&&t.montant<0&&t.type!=='epargne').reduce((s,t)=>s+Math.abs(t.montant),0)
+  );
 
   const elJour = document.getElementById('budget-jour');
   const elSub = document.getElementById('budget-jour-sub');
@@ -1177,15 +1274,67 @@ function renderBudgetJour(){
   const elRest = document.getElementById('budget-jours-restants');
 
   elJour.textContent = fmt(best);
-  elJour.style.color = best <= 0 ? 'var(--red)' : best < 15 ? 'var(--amber)' : 'var(--green)';
-  const simStartLabel = SIM_START === REAL_TODAY ? "aujourd'hui" : ("à partir du " + fmtD(SIM_START));
+  elJour.style.color = best<=0?'var(--red)':best<15?'var(--amber)':'var(--green)';
+  const simStartLabel = SIM_START===REAL_TODAY?"aujourd'hui":("à partir du "+fmtD(SIM_START));
   elSub.textContent = "par jour · calculé depuis " + simStartLabel;
   elLibre.textContent = fmt(potLibre);
-  elLibre.style.color = potLibre < 0 ? 'var(--red)' : 'var(--text)';
-  elRest.textContent = `≈ ${totalDays} jours de projection`;
+  elLibre.style.color = potLibre<0?'var(--red)':'var(--text)';
+  elRest.textContent = "≈ "+totalDays+" jours de projection";
 }
 
-function refreshAll(){renderHome();renderBudgetJour();renderProj();renderHisto();renderChart();renderEpargne();}
+
+function renderCartesList(){
+  ['MC','VISA'].forEach(function(ct){
+    const elId = ct==='MC'?'cartes-mc-list':'cartes-visa-list';
+    const el = document.getElementById(elId);
+    if(!el) return;
+    const items = userExpenses.filter(function(e){return e.moyen===ct&&e.montant<0;})
+      .sort(function(a,b){return b.date.localeCompare(a.date);});
+    if(!items.length){
+      el.innerHTML='<div style="padding:14px;font-size:13px;color:var(--muted)">Aucune dépense '+ct+' saisie.</div>';
+      return;
+    }
+    const groups={};
+    items.forEach(function(e){
+      if(!groups[e.debitDate]) groups[e.debitDate]=[];
+      groups[e.debitDate].push(e);
+    });
+    let html='';
+    Object.entries(groups).sort(function(a,b){return a[0].localeCompare(b[0]);}).forEach(function(entry){
+      const debit=entry[0], exps=entry[1];
+      const tot=exps.reduce(function(s,e){return s+Math.abs(e.montant);},0);
+      const info=getCardCycleInfo(ct,debit);
+      const overStyle=info.isOver?'color:var(--red);font-weight:700':'color:var(--muted)';
+      const extraTxt=info.isOver
+        ?'<span style="color:var(--red);font-size:10px"> ⚠ dépassement</span>'
+        :'<span style="color:var(--muted);font-size:10px"> · '+fmt(info.remaining)+' dispo</span>';
+      html+='<div style="padding:8px 16px 4px;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;border-bottom:0.5px solid var(--border)">Débit le '+fmtD(debit)+' · <span style="'+overStyle+'">'+fmt(-tot)+'</span>'+extraTxt+'</div>';
+      exps.forEach(function(e){
+        const eid = e.id;
+        html+='<div class="hrow">'
+          +'<div class="hrow-meta"><span class="hrow-date">'+fmtDL(e.date)+'</span><span class="badge '+(ct==='MC'?'b-mc':'b-visa')+'">'+ct+'</span></div>'
+          +'<span class="hrow-label">'+e.label+'</span>'
+          +'<div class="hrow-right"><span class="hrow-amount red">'+fmt(e.montant)+'</span></div>'
+          +'<div class="hrow-actions">'
+          +'<button type="button" class="edit-btn carte-edit-btn" data-eid="'+eid+'">&#9999;</button>'
+          +'<buttonclass="action-btn carte-del-btn" data-eidn-btn" data-eid="'+eid+'" style="color:var(--red)">&#128465;</button>'
+          +'</div>'
+          +'</div>';
+      });
+    });
+    el.innerHTML=html;
+  });
+}
+
+function deleteUserExpense(id){
+  
+  userExpenses=userExpenses.filter(e=>e.id!==id);
+  doneSet.delete('u'+id);
+  delete overrides['u'+id];
+  refreshAll();saveState();
+}
+
+function refreshAll(){renderHome();renderBudgetJour();renderProj();renderHisto();renderChart();renderEpargne();renderCartesList();}
 function showTab(name,btn){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -1195,6 +1344,16 @@ function showTab(name,btn){
 // INIT
 loadState();
 document.getElementById('f-date').value=REAL_TODAY;
+
+// Event delegation for carte buttons
+document.addEventListener('click', function(ev){
+  const t = ev.target;
+  if(t.hasAttribute('data-eid')){
+    const eid = t.getAttribute('data-eid');
+    if(t.classList.contains('carte-edit-btn')) openSheet('u'+eid);
+    if(t.classList.contains('carte-del-btn')) deleteUserExpense(parseInt(eid));
+  }
+});
 setType('dep');
 refreshAll();
 updateStorageInfo();
