@@ -291,6 +291,23 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
           <div class="debit-hint" id="debit-hint">Sélectionne une date pour voir la date de débit.</div>
         </div>
 
+        <!-- Ordre permanent -->
+        <div class="f-group" id="recur-block" style="display:none">
+          <label class="f-label">Récurrence</label>
+          <div class="seg" id="seg-recur">
+            <button type="button" class="seg-btn active" data-val="none">Non récurrent</button>
+            <button type="button" class="seg-btn" data-val="monthly">Mensuel</button>
+            <button type="button" class="seg-btn" data-val="weekly">Hebdo</button>
+          </div>
+          <div id="recur-hint" style="font-size:12px;color:var(--muted);margin-top:-8px;margin-bottom:10px"></div>
+        </div>
+        <div class="f-group" style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <label class="f-label" style="margin:0;flex:1">Ordre permanent / récurrent</label>
+          <div style="position:relative;width:44px;height:24px;cursor:pointer" onclick="toggleRecur()">
+            <div style="position:absolute;inset:0;border-radius:12px;background:var(--border2);transition:.2s" id="recur-track"></div>
+            <div style="position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="recur-thumb"></div>
+          </div>
+        </div>
         <button type="button" class="btn-primary dep" id="btn-submit" onclick="addEntry()">Ajouter la dépense</button>
       </div>
 
@@ -322,6 +339,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
           <option value="2027-01">Jan 27</option>
           <option value="2027-02">Fév 27</option>
           <option value="2027-03">Mar 27</option>
+          <option value="2027-04">Avr 27</option>
+          <option value="2027-05">Mai 27</option>
+          <option value="2027-06">Juin 27</option>
+          <option value="2027-07">Juil 27</option>
+          <option value="2027-08">Août 27</option>
+          <option value="2027-09">Sept 27</option>
+          <option value="2027-10">Oct 27</option>
+          <option value="2027-11">Nov 27</option>
+          <option value="2027-12">Déc 27</option>
         </select>
         <select id="filt-type" onchange="renderHisto()">
           <option value="">Tout</option><option value="recette">Recettes</option><option value="depense">Dépenses</option>
@@ -509,6 +535,79 @@ const BASE_TX=[
   {id:'c20',date:'2027-03-12',label:'Virement épargne',montant:-1350,type:'epargne'},
   {id:'c21',date:'2027-03-25',label:'Salaire',montant:2490,type:'fixed'},
   {id:'c22',date:'2027-03-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Avril 2027
+  {id:'d01',date:'2027-04-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'d02',date:'2027-04-01',label:'Divers',montant:-700,type:'daily'},
+  {id:'d03',date:'2027-04-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'d04',date:'2027-04-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'d05',date:'2027-04-12',label:'Virement épargne',montant:-300,type:'epargne'},
+  {id:'d06',date:'2027-04-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'d07',date:'2027-04-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Mai 2027
+  {id:'d08',date:'2027-05-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'d09',date:'2027-05-01',label:'Divers',montant:-700,type:'daily'},
+  {id:'d10',date:'2027-05-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'d11',date:'2027-05-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'d12',date:'2027-05-12',label:'Virement épargne',montant:-300,type:'epargne'},
+  {id:'d13',date:'2027-05-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'d14',date:'2027-05-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Juin 2027
+  {id:'d15',date:'2027-06-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'d16',date:'2027-06-01',label:'Divers',montant:-700,type:'daily'},
+  {id:'d17',date:'2027-06-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'d18',date:'2027-06-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'d19',date:'2027-06-12',label:'Virement épargne',montant:-300,type:'epargne'},
+  {id:'d20',date:'2027-06-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'d21',date:'2027-06-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Juillet 2027
+  {id:'d22',date:'2027-07-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'d23',date:'2027-07-01',label:'Divers',montant:-700,type:'daily'},
+  {id:'d24',date:'2027-07-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'d25',date:'2027-07-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'d26',date:'2027-07-12',label:'Virement épargne',montant:-300,type:'epargne'},
+  {id:'d27',date:'2027-07-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'d28',date:'2027-07-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Août 2027
+  {id:'d29',date:'2027-08-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'d30',date:'2027-08-01',label:'Divers',montant:-700,type:'daily'},
+  {id:'d31',date:'2027-08-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'d32',date:'2027-08-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'d33',date:'2027-08-12',label:'Virement épargne',montant:-300,type:'epargne'},
+  {id:'d34',date:'2027-08-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'d35',date:'2027-08-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Septembre 2027
+  {id:'d36',date:'2027-09-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'d37',date:'2027-09-01',label:'Divers',montant:-700,type:'daily'},
+  {id:'d38',date:'2027-09-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'d39',date:'2027-09-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'d40',date:'2027-09-12',label:'Virement épargne',montant:-300,type:'epargne'},
+  {id:'d41',date:'2027-09-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'d42',date:'2027-09-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Octobre 2027
+  {id:'d43',date:'2027-10-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'d44',date:'2027-10-01',label:'Divers',montant:-700,type:'daily'},
+  {id:'d45',date:'2027-10-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'d46',date:'2027-10-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'d47',date:'2027-10-12',label:'Virement épargne',montant:-300,type:'epargne'},
+  {id:'d48',date:'2027-10-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'d49',date:'2027-10-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Novembre 2027
+  {id:'d50',date:'2027-11-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'d51',date:'2027-11-01',label:'Divers',montant:-700,type:'daily'},
+  {id:'d52',date:'2027-11-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'d53',date:'2027-11-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'d54',date:'2027-11-12',label:'Virement épargne',montant:-300,type:'epargne'},
+  {id:'d55',date:'2027-11-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'d56',date:'2027-11-30',label:'Remb parents',montant:-300,type:'fixed'},
+  // Décembre 2027
+  {id:'d57',date:'2027-12-01',label:'Orange',montant:-4.5,type:'fixed'},
+  {id:'d58',date:'2027-12-01',label:'Divers',montant:-700,type:'daily'},
+  {id:'d59',date:'2027-12-09',label:'Salaire',montant:990,type:'fixed'},
+  {id:'d60',date:'2027-12-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
+  {id:'d61',date:'2027-12-12',label:'Virement épargne',montant:-300,type:'epargne'},
+  {id:'d62',date:'2027-12-14',label:'PRIME FA',montant:1309,type:'fixed'},
+  {id:'d63',date:'2027-12-25',label:'Salaire',montant:2490,type:'fixed'},
+  {id:'d64',date:'2027-12-30',label:'Remb parents',montant:-300,type:'fixed'},
 ];
 
 let doneSet=new Set(['b20b']);
@@ -646,7 +745,7 @@ function computeProj(){
   // Projection = TOUTES les TX non validées, passées ou futures
   // Une TX du 11/06 non validée reste visible et compte dans la projection
   const pending=getAllTx()
-    .filter(t=>!t.done&&t.montant!==0&&t.date<='2027-03-31'
+    .filter(t=>!t.done&&t.montant!==0&&t.date<='2027-12-31'
       &&!(t.userAdded&&(t.moyen==='MC'||t.moyen==='VISA')))
     .sort((a,b)=>a.date.localeCompare(b.date));
   let bal=cs;const rows=[];
@@ -706,6 +805,37 @@ document.querySelectorAll('#seg-moyen .seg-btn').forEach(btn=>{
   });
 });
 
+// Recurring toggle
+let selRecur='none';
+function toggleRecur(){
+  const track=document.getElementById('recur-track');
+  const thumb=document.getElementById('recur-thumb');
+  const block=document.getElementById('recur-block');
+  const isOn=thumb.style.left==='22px';
+  if(isOn){
+    thumb.style.left='2px';track.style.background='var(--border2)';
+    block.style.display='none';selRecur='none';
+  } else {
+    thumb.style.left='22px';track.style.background='var(--blue)';
+    block.style.display='block';selRecur='monthly';
+    updateRecurHint();
+  }
+}
+document.querySelectorAll('#seg-recur .seg-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('#seg-recur .seg-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');selRecur=btn.dataset.val;updateRecurHint();
+  });
+});
+function updateRecurHint(){
+  const ds=document.getElementById('f-date').value;
+  const el=document.getElementById('recur-hint');
+  if(!ds){el.textContent='';return;}
+  if(selRecur==='monthly') el.textContent="Répété chaque mois jusqu'en déc. 2027";
+  else if(selRecur==='weekly') el.textContent="Répété chaque semaine jusqu'en déc. 2027";
+  else el.textContent='';
+}
+
 function addEntry(){
   const label=document.getElementById('f-label').value.trim();
   const amount=parseFloat(document.getElementById('f-amount').value);
@@ -724,9 +854,32 @@ function addEntry(){
     });
   }
 
+  // Gestion récurrence
+  if(selRecur !== 'none' && selType === 'dep'){
+    const baseDate = new Date(ds+'T00:00:00');
+    const endRecur = new Date('2027-12-31T00:00:00');
+    let nextDate = new Date(baseDate);
+    if(selRecur==='monthly') nextDate.setMonth(nextDate.getMonth()+1);
+    else nextDate.setDate(nextDate.getDate()+7);
+    while(nextDate <= endRecur){
+      const nd = nextDate.toISOString().slice(0,10);
+      userExpenses.push({
+        id:Date.now()+Math.random(),label,montant:-amount,moyen:selMoyen,
+        date:nd,debitDate:getDebitDate(selMoyen,nd),cat:selCat,isRevenue:false,recurring:true
+      });
+      if(selRecur==='monthly') nextDate.setMonth(nextDate.getMonth()+1);
+      else nextDate.setDate(nextDate.getDate()+7);
+    }
+  }
+
   document.getElementById('f-label').value='';
   document.getElementById('f-amount').value='';
-  selCat='';renderCatChips();
+  selCat='';selRecur='none';
+  // Reset toggle
+  document.getElementById('recur-thumb').style.left='2px';
+  document.getElementById('recur-track').style.background='var(--border2)';
+  document.getElementById('recur-block').style.display='none';
+  renderCatChips();
   refreshAll();saveState();
   // Retour accueil
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -1227,7 +1380,7 @@ function renderEpargneChart(done, pending){
 }
 
 function renderBudgetJour(){
-  const END_DATE = '2027-03-25';
+  const END_DATE = '2027-12-25';
   const msPerDay = 1000*60*60*24;
 
   // 1. Déterminer SIM_START : aujourd'hui ou prochaine rentrée > 500€
@@ -1737,6 +1890,23 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
           <div class="debit-hint" id="debit-hint">Sélectionne une date pour voir la date de débit.</div>
         </div>
 
+        <!-- Ordre permanent -->
+        <div class="f-group" id="recur-block" style="display:none">
+          <label class="f-label">Récurrence</label>
+          <div class="seg" id="seg-recur">
+            <button type="button" class="seg-btn active" data-val="none">Non récurrent</button>
+            <button type="button" class="seg-btn" data-val="monthly">Mensuel</button>
+            <button type="button" class="seg-btn" data-val="weekly">Hebdo</button>
+          </div>
+          <div id="recur-hint" style="font-size:12px;color:var(--muted);margin-top:-8px;margin-bottom:10px"></div>
+        </div>
+        <div class="f-group" style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <label class="f-label" style="margin:0;flex:1">Ordre permanent / récurrent</label>
+          <div style="position:relative;width:44px;height:24px;cursor:pointer" onclick="toggleRecur()">
+            <div style="position:absolute;inset:0;border-radius:12px;background:var(--border2);transition:.2s" id="recur-track"></div>
+            <div style="position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="recur-thumb"></div>
+          </div>
+        </div>
         <button type="button" class="btn-primary dep" id="btn-submit" onclick="addEntry()">Ajouter la dépense</button>
       </div>
 
@@ -1768,6 +1938,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
           <option value="2027-01">Jan 27</option>
           <option value="2027-02">Fév 27</option>
           <option value="2027-03">Mar 27</option>
+          <option value="2027-04">Avr 27</option>
+          <option value="2027-05">Mai 27</option>
+          <option value="2027-06">Juin 27</option>
+          <option value="2027-07">Juil 27</option>
+          <option value="2027-08">Août 27</option>
+          <option value="2027-09">Sept 27</option>
+          <option value="2027-10">Oct 27</option>
+          <option value="2027-11">Nov 27</option>
+          <option value="2027-12">Déc 27</option>
         </select>
         <select id="filt-type" onchange="renderHisto()">
           <option value="">Tout</option><option value="recette">Recettes</option><option value="depense">Dépenses</option>
@@ -1849,113 +2028,7 @@ const addDays=(s,n)=>{const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);r
 const DEP_CATS=['Alimentation','Carburant','Enfants','Épargne','Loisirs','Maison','Restaurant','Santé','Transport','Vêtements','Divers'];
 const REV_CATS=['Salaire','Prime','Remboursement','Autre'];
 
-const BASE_TX=[
-  {id:'b20b',date:'2026-06-10',label:'Crédit hypo',montant:-483.36,type:'fixed'},
-  {id:'b21',date:'2026-06-11',label:'Crédit hypo',montant:-517.52,type:'fixed'},
-  {id:'b22',date:'2026-06-11',label:'FM',montant:-31.2,type:'fixed'},
-  {id:'b23',date:'2026-06-12',label:'Crédit hypo',montant:-98.62,type:'fixed'},
-  {id:'b24',date:'2026-06-14',label:'Crédit hypo',montant:-156.81,type:'fixed'},
-  {id:'b25',date:'2026-06-14',label:'MASTER débit',montant:-551.82,type:'card_debit',cardType:'MC',engaged:true},
-  {id:'b26',date:'2026-06-15',label:'Taxe poubelle',montant:-208.45,type:'fixed'},
-  {id:'b27',date:'2026-06-19',label:"Prime fin d'année",montant:1920,type:'fixed'},
-  {id:'b28',date:'2026-06-24',label:'FM',montant:-31.2,type:'fixed'},
-  {id:'b29',date:'2026-06-25',label:'Salaire',montant:2490,type:'fixed'},
-  {id:'b30',date:'2026-06-26',label:'TOMA',montant:-450,type:'fixed'},
-  {id:'b31',date:'2026-06-27',label:'Remb cadastre',montant:-900,type:'fixed'},
-  {id:'b32',date:'2026-06-28',label:'Crédit hypo',montant:-194,type:'fixed'},
-  {id:'b33',date:'2026-06-30',label:'Remb parents',montant:-400,type:'fixed'},
-  {id:'b34',date:'2026-06-30',label:'FM',montant:-31.2,type:'fixed'},
-  {id:'b35',date:'2026-07-01',label:'Orange',montant:-4.5,type:'fixed'},
-  {id:'b36',date:'2026-07-01',label:'Eau',montant:-25,type:'fixed'},
-  {id:'b37',date:'2026-07-01',label:'VISA débit',montant:-1125.29,type:'card_debit',cardType:'VISA',engaged:true},
-  {id:'b38',date:'2026-07-09',label:'Salaire',montant:1045,type:'fixed'},
-  {id:'b39',date:'2026-07-11',label:'Crédit hypo',montant:-483.36,type:'fixed'},
-  {id:'b40',date:'2026-07-11',label:'Crédit hypo',montant:-517.52,type:'fixed'},
-  {id:'b41',date:'2026-07-12',label:'Crédit hypo',montant:-98.62,type:'fixed'},
-  {id:'b42',date:'2026-07-14',label:'Crédit hypo',montant:-156.81,type:'fixed'},
-  {id:'b43',date:'2026-07-14',label:'MASTER débit',montant:0,type:'card_debit',cardType:'MC'},
-  {id:'b44',date:'2026-07-25',label:'Salaire',montant:2490,type:'fixed'},
-  {id:'b45',date:'2026-07-25',label:'Crédit hypo',montant:-194,type:'fixed'},
-  {id:'b46',date:'2026-07-30',label:'Remb parents',montant:-400,type:'fixed'},
-  {id:'b47',date:'2026-08-01',label:'Orange',montant:-4.5,type:'fixed'},
-  {id:'b48',date:'2026-08-01',label:'Eau',montant:-25,type:'fixed'},
-  {id:'b49',date:'2026-08-01',label:'VISA débit',montant:0,type:'card_debit',cardType:'VISA'},
-  {id:'b50',date:'2026-08-09',label:'Salaire',montant:990,type:'fixed'},
-  {id:'b51',date:'2026-08-11',label:'Crédit hypo',montant:-483.36,type:'fixed'},
-  {id:'b52',date:'2026-08-11',label:'Crédit hypo',montant:-517.52,type:'fixed'},
-  {id:'b53',date:'2026-08-12',label:'Crédit hypo',montant:-98.62,type:'fixed'},
-  {id:'b54',date:'2026-08-14',label:'Crédit hypo',montant:-156.81,type:'fixed'},
-  {id:'b55',date:'2026-08-14',label:'MASTER débit',montant:0,type:'card_debit',cardType:'MC'},
-  // Août suite
-  {id:'b56',date:'2026-08-20',label:'FM',montant:-31.2,type:'fixed'},
-  {id:'b57',date:'2026-08-24',label:'FM',montant:-31.2,type:'fixed'},
-  {id:'b58',date:'2026-08-25',label:'Salaire',montant:2490,type:'fixed'},
-  {id:'b59',date:'2026-08-25',label:'Crédit hypo',montant:-194,type:'fixed'},
-  {id:'b60',date:'2026-08-30',label:'Remb parents',montant:-400,type:'fixed'},
-  // Septembre 2026
-  {id:'b61',date:'2026-09-01',label:'Orange',montant:-4.5,type:'fixed'},
-  {id:'b62',date:'2026-09-01',label:'Divers',montant:-920,type:'daily'},
-  {id:'b63',date:'2026-09-01',label:'REMB VISA',montant:-500,type:'fixed'},
-  {id:'b64',date:'2026-09-03',label:'VENTE MAISON',montant:83000,type:'fixed'},
-  {id:'b65',date:'2026-09-09',label:'Salaire',montant:990,type:'fixed'},
-  {id:'b66',date:'2026-09-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
-  {id:'b67',date:'2026-09-12',label:'RENTRÉE SCOLAIRE',montant:-400,type:'fixed'},
-  {id:'b68',date:'2026-09-12',label:'Virement épargne',montant:-79500,type:'epargne'},
-  {id:'b69',date:'2026-09-25',label:'Salaire',montant:2490,type:'fixed'},
-  {id:'b70',date:'2026-09-30',label:'Remb parents',montant:-300,type:'fixed'},
-  // Octobre 2026
-  {id:'b71',date:'2026-10-01',label:'Orange',montant:-4.5,type:'fixed'},
-  {id:'b72',date:'2026-10-12',label:'Virement épargne',montant:-500,type:'epargne'},
-  {id:'b73',date:'2026-10-25',label:'Salaire',montant:2490,type:'fixed'},
-  // Novembre 2026
-  {id:'b74',date:'2026-11-01',label:'Orange',montant:-4.5,type:'fixed'},
-  {id:'b75',date:'2026-11-12',label:'Virement épargne',montant:-500,type:'epargne'},
-  {id:'b76',date:'2026-11-25',label:'Salaire',montant:2490,type:'fixed'},
-  // Octobre 2026 (suite)
-  {id:'b80',date:'2026-10-01',label:'Divers',montant:-1000,type:'daily'},
-  {id:'b81',date:'2026-10-09',label:'Salaire',montant:990,type:'fixed'},
-  {id:'b82',date:'2026-10-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
-  {id:'b85',date:'2026-10-30',label:'Remb parents',montant:-300,type:'fixed'},
-  // Novembre 2026
-  {id:'b87',date:'2026-11-01',label:'Divers',montant:-1000,type:'daily'},
-  {id:'b88',date:'2026-11-09',label:'Salaire',montant:990,type:'fixed'},
-  {id:'b89',date:'2026-11-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
-  {id:'b92',date:'2026-11-30',label:'Remb parents',montant:-300,type:'fixed'},
-  // Décembre 2026
-  {id:'b77',date:'2026-12-01',label:'Orange',montant:-4.5,type:'fixed'},
-  {id:'b93',date:'2026-12-01',label:'Divers',montant:-1000,type:'daily'},
-  {id:'b94',date:'2026-12-09',label:'Salaire',montant:990,type:'fixed'},
-  {id:'b95',date:'2026-12-12',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
-  {id:'b78',date:'2026-12-12',label:'Virement épargne',montant:-392,type:'epargne'},
-  {id:'b96',date:'2026-12-14',label:'PRIME FA',montant:1309,type:'fixed'},
-  {id:'b79',date:'2026-12-25',label:'Salaire',montant:2490,type:'fixed'},
-  {id:'b97',date:'2026-12-30',label:'Remb parents',montant:-300,type:'fixed'},
-  // Janvier 2027
-  {id:'c01',date:'2027-01-01',label:'Orange',montant:-4.5,type:'fixed'},
-  {id:'c02',date:'2027-01-01',label:'Divers',montant:-1000,type:'daily'},
-  {id:'c03',date:'2027-01-09',label:'Salaire',montant:990,type:'fixed'},
-  {id:'c04',date:'2027-01-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
-  {id:'c05',date:'2027-01-12',label:'Virement épargne',montant:-500,type:'epargne'},
-  {id:'c06',date:'2027-01-24',label:'Récup impôts',montant:1120,type:'fixed'},
-  {id:'c07',date:'2027-01-25',label:'Salaire',montant:2490,type:'fixed'},
-  {id:'c08',date:'2027-01-30',label:'Remb parents',montant:-300,type:'fixed'},
-  // Février 2027
-  {id:'c09',date:'2027-02-01',label:'Orange',montant:-4.5,type:'fixed'},
-  {id:'c10',date:'2027-02-01',label:'Divers',montant:-1000,type:'daily'},
-  {id:'c11',date:'2027-02-09',label:'Salaire',montant:990,type:'fixed'},
-  {id:'c12',date:'2027-02-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
-  {id:'c13',date:'2027-02-12',label:'Virement épargne',montant:-500,type:'epargne'},
-  {id:'c14',date:'2027-02-25',label:'Salaire',montant:2490,type:'fixed'},
-  {id:'c15',date:'2027-02-28',label:'Remb parents',montant:-300,type:'fixed'},
-  // Mars 2027
-  {id:'c16',date:'2027-03-01',label:'Orange',montant:-4.5,type:'fixed'},
-  {id:'c17',date:'2027-03-01',label:'Divers',montant:-1000,type:'daily'},
-  {id:'c18',date:'2027-03-09',label:'Salaire',montant:990,type:'fixed'},
-  {id:'c19',date:'2027-03-11',label:'COMPTE COMMUN',montant:-2150,type:'fixed'},
-  {id:'c20',date:'2027-03-12',label:'Virement épargne',montant:-1350,type:'epargne'},
-  {id:'c21',date:'2027-03-25',label:'Salaire',montant:2490,type:'fixed'},
-  {id:'c22',date:'2027-03-30',label:'Remb parents',montant:-300,type:'fixed'},
-];
+
 
 let doneSet=new Set(['b20b']);
 let userExpenses=[];
@@ -2092,7 +2165,7 @@ function computeProj(){
   // Projection = TOUTES les TX non validées, passées ou futures
   // Une TX du 11/06 non validée reste visible et compte dans la projection
   const pending=getAllTx()
-    .filter(t=>!t.done&&t.montant!==0&&t.date<='2027-03-31'
+    .filter(t=>!t.done&&t.montant!==0&&t.date<='2027-12-31'
       &&!(t.userAdded&&(t.moyen==='MC'||t.moyen==='VISA')))
     .sort((a,b)=>a.date.localeCompare(b.date));
   let bal=cs;const rows=[];
@@ -2152,6 +2225,37 @@ document.querySelectorAll('#seg-moyen .seg-btn').forEach(btn=>{
   });
 });
 
+// Recurring toggle
+let selRecur='none';
+function toggleRecur(){
+  const track=document.getElementById('recur-track');
+  const thumb=document.getElementById('recur-thumb');
+  const block=document.getElementById('recur-block');
+  const isOn=thumb.style.left==='22px';
+  if(isOn){
+    thumb.style.left='2px';track.style.background='var(--border2)';
+    block.style.display='none';selRecur='none';
+  } else {
+    thumb.style.left='22px';track.style.background='var(--blue)';
+    block.style.display='block';selRecur='monthly';
+    updateRecurHint();
+  }
+}
+document.querySelectorAll('#seg-recur .seg-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('#seg-recur .seg-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');selRecur=btn.dataset.val;updateRecurHint();
+  });
+});
+function updateRecurHint(){
+  const ds=document.getElementById('f-date').value;
+  const el=document.getElementById('recur-hint');
+  if(!ds){el.textContent='';return;}
+  if(selRecur==='monthly') el.textContent="Répété chaque mois jusqu'en déc. 2027";
+  else if(selRecur==='weekly') el.textContent="Répété chaque semaine jusqu'en déc. 2027";
+  else el.textContent='';
+}
+
 function addEntry(){
   const label=document.getElementById('f-label').value.trim();
   const amount=parseFloat(document.getElementById('f-amount').value);
@@ -2170,9 +2274,32 @@ function addEntry(){
     });
   }
 
+  // Gestion récurrence
+  if(selRecur !== 'none' && selType === 'dep'){
+    const baseDate = new Date(ds+'T00:00:00');
+    const endRecur = new Date('2027-12-31T00:00:00');
+    let nextDate = new Date(baseDate);
+    if(selRecur==='monthly') nextDate.setMonth(nextDate.getMonth()+1);
+    else nextDate.setDate(nextDate.getDate()+7);
+    while(nextDate <= endRecur){
+      const nd = nextDate.toISOString().slice(0,10);
+      userExpenses.push({
+        id:Date.now()+Math.random(),label,montant:-amount,moyen:selMoyen,
+        date:nd,debitDate:getDebitDate(selMoyen,nd),cat:selCat,isRevenue:false,recurring:true
+      });
+      if(selRecur==='monthly') nextDate.setMonth(nextDate.getMonth()+1);
+      else nextDate.setDate(nextDate.getDate()+7);
+    }
+  }
+
   document.getElementById('f-label').value='';
   document.getElementById('f-amount').value='';
-  selCat='';renderCatChips();
+  selCat='';selRecur='none';
+  // Reset toggle
+  document.getElementById('recur-thumb').style.left='2px';
+  document.getElementById('recur-track').style.background='var(--border2)';
+  document.getElementById('recur-block').style.display='none';
+  renderCatChips();
   refreshAll();saveState();
   // Retour accueil
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -2673,7 +2800,7 @@ function renderEpargneChart(done, pending){
 }
 
 function renderBudgetJour(){
-  const END_DATE = '2027-03-25';
+  const END_DATE = '2027-12-25';
   const msPerDay = 1000*60*60*24;
 
   // 1. Déterminer SIM_START : aujourd'hui ou prochaine rentrée > 500€
